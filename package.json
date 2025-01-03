@@ -1,0 +1,12 @@
+{
+  "name": "talentfi",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "frontend": "cd packages/frontend && npm run dev",
+    "contracts:test": "cd packages/contracts && forge test",
+    "agents:dev": "cd packages/ai-agents && python src/discovery_agent.py"
+  }
+}
