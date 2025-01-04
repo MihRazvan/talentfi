@@ -4,6 +4,7 @@ import os
 from dotenv import load_dotenv
 from typing import Dict, Any, List
 import json
+import asyncio
 
 class DeveloperAnalyzer:
     def __init__(self):
@@ -12,7 +13,6 @@ class DeveloperAnalyzer:
         self.model = "gpt-3.5-turbo"
 
     def _create_analysis_prompt(self, dev_data: Dict[str, Any]) -> str:
-        # Calculate languages
         languages = {}
         for repo in dev_data["repositories"]:
             for lang, bytes in repo["languages"].items():
@@ -20,31 +20,41 @@ class DeveloperAnalyzer:
 
         top_languages = sorted(languages.items(), key=lambda x: x[1], reverse=True)[:5]
         
-        return f"""Analyze this developer profile and provide a structured assessment.
+        return f"""You are analyzing a developer's profile for TalentFi, a platform that enables early investment in promising developers. Focus on identifying genuine talent and future potential.
 
 DEVELOPER PROFILE:
 Username: {dev_data['basic_info']['username']}
+Bio: {dev_data['basic_info']['bio']}
 Repositories: {dev_data['basic_info']['public_repos']}
 Account Created: {dev_data['basic_info']['account_created']}
 
-TOP LANGUAGES:
+TECHNICAL EXPERTISE:
 {'\n'.join([f'- {lang}: {bytes} bytes' for lang, bytes in top_languages])}
 
 RECENT PROJECTS:
-{'\n'.join([f'- {repo["name"]}: {repo["stars"]} stars, {repo["forks"]} forks' for repo in dev_data["repositories"]])}
+{'\n'.join([f'- {repo["name"]}: {repo["stars"]} stars, {repo["forks"]} forks\n  Languages: {", ".join(repo["languages"].keys())}' for repo in dev_data["repositories"]])}
 
-Analyze the profile and return a JSON response with the following structure:
+Analyze this developer's potential as an investment opportunity. Consider:
+1. Technical Innovation (unique project ideas, tech stack diversity)
+2. Growth Trajectory (skill progression, learning new technologies)
+3. Market Relevance (working with in-demand technologies)
+4. Professional Development (project complexity, code quality indicators)
+
+Provide a structured assessment in this JSON format:
 {{
-    "confidence_score": <number between 0-100>,
-    "strengths": [<list of key technical strengths>],
-    "growth_areas": [<areas where developer could improve>],
-    "recommendation": <"create_profile" or "ignore_profile" or "flag_for_review">,
-    "category_tags": [<relevant technical categories>],
-    "token_value": <number between 1-10>,
-    "reasoning": [<list of reasons for your assessment>]
+    "confidence_score": <0-100, based on overall potential>,
+    "strengths": [<key technical and professional strengths>],
+    "growth_areas": [<specific areas for improvement>],
+    "recommendation": <"create_profile" for high potential, "flag_for_review" for promising but needs verification, "ignore_profile" for not ready>,
+    "category_tags": [<technical specialties and focus areas>],
+    "token_value": <1-10, based on current achievements and future potential>,
+    "reasoning": [<detailed reasons for the assessment>],
+    "investment_thesis": [<why someone should invest in this developer>],
+    "risk_factors": [<potential risks to consider>]
 }}"""
 
-    async def analyze_developer(self, dev_data: Dict[str, Any]) -> Dict[str, Any]:
+    def analyze_developer(self, dev_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Synchronous version of the analysis"""
         try:
             analysis_prompt = self._create_analysis_prompt(dev_data)
             
@@ -72,31 +82,6 @@ Analyze the profile and return a JSON response with the following structure:
             print(f"Response received: {completion.choices[0].message.content if 'completion' in locals() else 'No response'}")
             return None
 
-# Let's also update the test script
-# packages/ai-agents/src/test_analyzer.py
-import asyncio
-from github_client import GitHubClient
-from ai_analyzer import DeveloperAnalyzer
-import json
-
-async def test_analysis():
-    try:
-        # Get GitHub data
-        gh_client = GitHubClient()
-        developer_data = await gh_client.get_developer_data("MihRazvan")
-        
-        # Analyze data
-        analyzer = DeveloperAnalyzer()
-        analysis = await analyzer.analyze_developer(developer_data)
-        
-        if analysis:
-            print("\nAI Analysis Results:")
-            print(json.dumps(analysis, indent=2))
-        else:
-            print("Analysis failed to produce results.")
-
-    except Exception as e:
-        print(f"Error in test: {str(e)}")
-
-if __name__ == "__main__":
-    asyncio.run(test_analysis())
+    async def analyze_developer_async(self, dev_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Async version of the analysis"""
+        return self.analyze_developer(dev_data)  # For now, we'll just call the sync version

@@ -12,11 +12,12 @@ async def test_analysis():
         
         # Analyze data
         analyzer = DeveloperAnalyzer()
-        analysis = await analyzer.analyze_developer(developer_data)
+        # Use the sync version since OpenAI's client is synchronous
+        analysis = analyzer.analyze_developer(developer_data)
         
         if analysis:
             print("\nAI Analysis Results:")
-            print(json.dumps(analysis, indent=2))  # Just dump once since analysis is already a dict
+            print(json.dumps(analysis, indent=2))
         else:
             print("Analysis failed to produce results.")
 
