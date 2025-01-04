@@ -1,24 +1,13 @@
-from pydantic import BaseModel, Field
-from typing import Dict, List
+# packages/ai-agents/src/config.py
+from pydantic import BaseModel
+from typing import Dict
 
 class DiscoveryConfig(BaseModel):
-    category: str = "developers"
+    openai_model: str = "gpt-4o-mini"  # Updated to gpt-4o-mini
+    github_base_url: str = "https://api.github.com"
+    github_api_version: str = "2022-11-28"
     min_requirements: Dict[str, int] = {
-        "repos": 3,
-        "followers": 50,
-        "account_age_months": 6
+        "repos": 3,           # At least 3 repositories
+        "followers": 50,      # At least 50 followers
+        "account_age_days": 180  # Account at least 6 months old
     }
-    scoring_weights: Dict[str, float] = {
-        "code_quality": 0.3,
-        "project_impact": 0.3,
-        "consistency": 0.2,
-        "collaboration": 0.2
-    }
-
-class DeveloperProfile(BaseModel):
-    username: str
-    assessment: List[str]
-    confidence_score: int = Field(..., ge=0, le=100)
-    category_tags: List[str]
-    recommendation: str = Field(..., pattern="^(create_profile|ignore_profile|flag_for_review)$")
-    potential_value: float = Field(..., description="Estimated initial token value")
