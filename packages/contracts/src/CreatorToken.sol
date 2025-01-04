@@ -89,5 +89,14 @@ contract CreatorToken is ERC20 {
         if (!success) revert TransferFailed();
     }
 
+    function transfer(
+        address to,
+        uint256 amount
+    ) public override returns (bool) {
+        require(balanceOf(msg.sender) >= amount, "Insufficient balance");
+        _transfer(msg.sender, to, amount);
+        return true;
+    }
+
     receive() external payable {}
 }
