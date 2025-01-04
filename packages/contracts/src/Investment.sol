@@ -1,0 +1,9 @@
+// test/Investment.t.sol
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.24;
+
+import "forge-std/Test.sol";
+
+contract InvestmentTest is Test {
+    // Tests will be added later
+}
