@@ -1,0 +1,30 @@
+{
+  "transactions": [
+    {
+      "hash": null,
+      "transactionType": "CALL",
+      "contractName": "DeployScript",
+      "contractAddress": "0x9f7cf1d1f558e57ef88a59ac3d47214ef25b6a06",
+      "function": "deploy()",
+      "arguments": [],
+      "transaction": {
+        "from": "0x0a6a5ba22da4e199bb5d8cc04a84976c5930d049",
+        "to": "0x9f7cf1d1f558e57ef88a59ac3d47214ef25b6a06",
+        "gas": "0x71a6",
+        "value": "0x0",
+        "input": "0x775c300c",
+        "nonce": "0x0",
+        "chainId": "0x90f7"
+      },
+      "additionalContracts": [],
+      "isFixedGasLimit": false
+    }
+  ],
+  "receipts": [],
+  "libraries": [],
+  "pending": [],
+  "returns": {},
+  "timestamp": 1736017524,
+  "chain": 37111,
+  "commit": "4837c6d"
+}

@@ -1,16 +1,16 @@
 [profile.default]
-src = "src"
-out = "out"
-libs = ["lib"]
-remappings = ["@openzeppelin/=lib/openzeppelin-contracts/"]
+src = 'src'
+out = 'out'
+libs = ['lib']
+solc = "0.8.24"
 
 [profile.zksync]
-src = "src"
-libs = ["lib"]
+src = 'src'
+libs = ['lib']
 solc-version = "0.8.24"
 fallback_oz = true
 is_system = false
 mode = "3"
 
 [rpc_endpoints]
-lens = "${RPC_URL}"
+lens = "https://rpc.testnet.lens.dev"
