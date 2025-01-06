@@ -1,4 +1,3 @@
-// test/Investment.t.sol
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
@@ -13,6 +12,7 @@ contract InvestmentTest is Test {
 
     address public developer = address(1);
     address public investor = address(2);
+    address public proxy = address(3);
     string constant GITHUB_USERNAME = "dev123";
     string constant TOKEN_NAME = "DevToken";
     string constant TOKEN_SYMBOL = "DEV";
@@ -32,6 +32,7 @@ contract InvestmentTest is Test {
 
         // Fund investor
         vm.deal(investor, 100 ether);
+        vm.deal(proxy, 100 ether);
     }
 
     function testCreateToken() public {
@@ -40,18 +41,57 @@ contract InvestmentTest is Test {
         vm.stopPrank();
 
         assertTrue(tokenAddress != address(0), "Token should be created");
-        assertEq(investment.getTokenByDeveloper(developer), tokenAddress);
-        assertEq(investment.getTokenByUsername(GITHUB_USERNAME), tokenAddress);
+        assertEq(
+            investment.getTokenByDeveloper(developer),
+            payable(tokenAddress)
+        );
+        assertEq(
+            investment.getTokenByUsername(GITHUB_USERNAME),
+            payable(tokenAddress)
+        );
+    }
+
+    function testCreateTokenForOther() public {
+        vm.startPrank(proxy);
+        address tokenAddress = investment.createTokenFor(
+            developer,
+            TOKEN_NAME,
+            TOKEN_SYMBOL
+        );
+        vm.stopPrank();
+
+        assertTrue(tokenAddress != address(0), "Token should be created");
+        assertEq(
+            investment.getTokenByDeveloper(developer),
+            payable(tokenAddress)
+        );
+        assertEq(
+            investment.getTokenByUsername(GITHUB_USERNAME),
+            payable(tokenAddress)
+        );
     }
 
     function testCannotCreateTokenIfNotVerified() public {
-        address unverifiedDev = address(3);
+        address unverifiedDev = address(4);
 
         vm.startPrank(unverifiedDev);
         registry.registerDeveloper("unverified");
 
         vm.expectRevert(Investment.NotVerified.selector);
         investment.createToken(TOKEN_NAME, TOKEN_SYMBOL);
+        vm.stopPrank();
+    }
+
+    function testCannotCreateTokenForUnverifiedUser() public {
+        address unverifiedDev = address(4);
+
+        vm.startPrank(unverifiedDev);
+        registry.registerDeveloper("unverified");
+        vm.stopPrank();
+
+        vm.startPrank(proxy);
+        vm.expectRevert(Investment.NotVerified.selector);
+        investment.createTokenFor(unverifiedDev, TOKEN_NAME, TOKEN_SYMBOL);
         vm.stopPrank();
     }
 
@@ -62,6 +102,14 @@ contract InvestmentTest is Test {
         vm.expectRevert(Investment.TokenAlreadyExists.selector);
         investment.createToken("Second Token", "SEC");
         vm.stopPrank();
+    }
+
+    function testCannotCreateMultipleTokensViaProxy() public {
+        vm.prank(proxy);
+        investment.createTokenFor(developer, TOKEN_NAME, TOKEN_SYMBOL);
+
+        vm.expectRevert(Investment.TokenAlreadyExists.selector);
+        investment.createTokenFor(developer, "Second Token", "SEC");
     }
 
     function testInvestInDeveloper() public {

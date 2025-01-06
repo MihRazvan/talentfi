@@ -1,167 +1,88 @@
 # packages/ai-agents/src/auto_registration.py
-from talent_discovery import TalentDiscoveryService
 from web3 import Web3
-import asyncio
 import json
-import os
-from dotenv import load_dotenv
 from pathlib import Path
 
 class AutoRegistration:
-    def __init__(self):
-        load_dotenv()
-        self.discovery = TalentDiscoveryService()
-        
-        try:
-            # Initialize Web3 with Lens Network
-            provider = Web3.HTTPProvider(os.getenv('LENS_RPC_URL'))
-            self.w3 = Web3(provider)
-        except Exception as e:
-            print(f"Warning: Failed to initialize Web3: {e}")
-            self.w3 = None
-            
-        self.private_key = os.getenv('PRIVATE_KEY')
-        
-        # Initialize contracts to None
+    def __init__(self, rpc_url=None, private_key=None, registry_address=None, investment_address=None):
+        """Initialize with optional test parameters"""
+        self.w3 = None
         self.registry = None
         self.investment = None
+        self.initialized = False
         
-    def _load_contracts(self):
-        """Load contract ABIs and initialize contracts"""
-        if self.registry is None or self.investment is None:
-            try:
-                # Get the directory containing the ABI files
-                abi_dir = Path(__file__).parent / 'abi'
-                
-                # Load contract ABIs
-                with open(abi_dir / 'TalentRegistry.json') as f:
-                    registry_abi = json.load(f)
-                with open(abi_dir / 'Investment.json') as f:
-                    investment_abi = json.load(f)
-                    
-                # Initialize contracts
-                self.registry = self.w3.eth.contract(
-                    address=os.getenv('REGISTRY_ADDRESS'),
-                    abi=registry_abi
-                )
-                self.investment = self.w3.eth.contract(
-                    address=os.getenv('INVESTMENT_ADDRESS'),
-                    abi=investment_abi
-                )
-            except FileNotFoundError as e:
-                print(f"Warning: Could not load ABI files: {e}")
-                # For testing purposes, we'll still allow the object to be created
-                pass
+        # Allow injection for testing
+        self.rpc_url = rpc_url
+        self.private_key = private_key
+        self.registry_address = registry_address
+        self.investment_address = investment_address
 
-    async def register_developers(self):
-        """Discover and register new developers"""
-        self._load_contracts()
-        if self.registry is None or self.investment is None:
-            raise Exception("Contracts not properly initialized")
+    def initialize(self):
+        """Separate initialization to make testing easier"""
+        if self.initialized:
+            return
+
+        try:
+            # Setup web3
+            if not self.w3:
+                self.w3 = Web3(Web3.HTTPProvider(self.rpc_url))
             
-        # Rest of the function remains the same...
-        discoveries = await self.discovery.discover_developers()
-        
-        for discovery in discoveries:
-            username = discovery['github_data']['basic_info']['username']
-            try:
-                # Get registration data
-                reg_data = await self.discovery.get_registration_data(discovery)
-                
-                # Register in TalentRegistry
-                tx_hash = await self._register_developer(reg_data['username'])
-                print(f"Registered {reg_data['username']}, tx: {tx_hash}")
-                
-                # Wait for confirmation
-                await self._wait_for_confirmation(tx_hash)
-                
-                # Verify developer
-                tx_hash = await self._verify_developer(reg_data['username'])
-                print(f"Verified {reg_data['username']}, tx: {tx_hash}")
-                await self._wait_for_confirmation(tx_hash)
-                
-                # Create token
-                tx_hash = await self._create_token(
-                    reg_data['username'],
-                    reg_data['token_name'],
-                    reg_data['token_symbol']
-                )
-                print(f"Created token for {reg_data['username']}, tx: {tx_hash}")
-                
-            except Exception as e:
-                print(f"Error registering {username}: {str(e)}")
-                continue
+            # Load contracts if addresses provided
+            if self.registry_address and self.investment_address:
+                self._load_contracts()
+            
+            self.initialized = True
+            return True
+        except Exception as e:
+            print(f"Initialization failed: {str(e)}")
+            return False
 
-    async def _register_developer(self, username: str) -> str:
-        """Send transaction to register developer"""
-        nonce = self.w3.eth.get_transaction_count(self.w3.eth.account.from_key(self.private_key).address)
-        
-        tx = self.registry.functions.registerDeveloper(username).build_transaction({
-            'chainId': int(os.getenv('CHAIN_ID')),
-            'gas': 2000000,
-            'maxFeePerGas': self.w3.eth.max_priority_fee,
-            'maxPriorityFeePerGas': self.w3.eth.max_priority_fee,
-            'nonce': nonce,
-        })
-        
-        signed_tx = self.w3.eth.account.sign_transaction(tx, self.private_key)
-        tx_hash = self.w3.eth.send_raw_transaction(signed_tx.rawTransaction)
-        return tx_hash.hex()
+    def _load_contracts(self):
+        """Load contract ABIs and create contract instances"""
+        try:
+            abi_dir = Path(__file__).parent / 'abi'
+            
+            # Load contract ABIs
+            with open(abi_dir / 'TalentRegistry.json') as f:
+                registry_abi = json.load(f)
+            with open(abi_dir / 'Investment.json') as f:
+                investment_abi = json.load(f)
 
-    async def _verify_developer(self, username: str) -> str:
-        """Send transaction to verify developer"""
-        dev_address = self.registry.functions.githubToWallet(username).call()
-        
-        nonce = self.w3.eth.get_transaction_count(self.w3.eth.account.from_key(self.private_key).address)
-        
-        tx = self.registry.functions.verifyDeveloper(dev_address).build_transaction({
-            'chainId': int(os.getenv('CHAIN_ID')),
-            'gas': 2000000,
-            'maxFeePerGas': self.w3.eth.max_priority_fee,
-            'maxPriorityFeePerGas': self.w3.eth.max_priority_fee,
-            'nonce': nonce,
-        })
-        
-        signed_tx = self.w3.eth.account.sign_transaction(tx, self.private_key)
-        tx_hash = self.w3.eth.send_raw_transaction(signed_tx.rawTransaction)
-        return tx_hash.hex()
+            # Create contract instances
+            self.registry = self.w3.eth.contract(
+                address=self.registry_address,
+                abi=registry_abi
+            )
+            self.investment = self.w3.eth.contract(
+                address=self.investment_address,
+                abi=investment_abi
+            )
+            return True
+        except Exception as e:
+            print(f"Failed to load contracts: {str(e)}")
+            self.registry = None
+            self.investment = None
+            return False
 
-    async def _create_token(self, username: str, name: str, symbol: str) -> str:
-        """Send transaction to create token"""
-        nonce = self.w3.eth.get_transaction_count(self.w3.eth.account.from_key(self.private_key).address)
+    async def register_developer(self, username: str) -> str:
+        """Register a single developer"""
+        if not self.registry:
+            raise Exception("Registry contract not initialized")
         
-        tx = self.investment.functions.createToken(name, symbol).build_transaction({
-            'chainId': int(os.getenv('CHAIN_ID')),
-            'gas': 3000000,
-            'maxFeePerGas': self.w3.eth.max_priority_fee,
-            'maxPriorityFeePerGas': self.w3.eth.max_priority_fee,
-            'nonce': nonce,
-        })
+        try:
+            tx = self.registry.functions.registerDeveloper(username).build_transaction({
+                'chainId': self.w3.eth.chain_id,
+                'gas': 2000000,
+                'maxFeePerGas': self.w3.eth.max_priority_fee,
+                'maxPriorityFeePerGas': self.w3.eth.max_priority_fee,
+                'nonce': self.w3.eth.get_transaction_count(
+                    self.w3.eth.account.from_key(self.private_key).address
+                ),
+            })
         
-        signed_tx = self.w3.eth.account.sign_transaction(tx, self.private_key)
-        tx_hash = self.w3.eth.send_raw_transaction(signed_tx.rawTransaction)
-        return tx_hash.hex()
-
-    async def _wait_for_confirmation(self, tx_hash: str, max_attempts: int = 50):
-        """Wait for transaction confirmation"""
-        attempts = 0
-        while attempts < max_attempts:
-            try:
-                receipt = self.w3.eth.get_transaction_receipt(tx_hash)
-                if receipt is not None:
-                    if receipt['status'] == 1:
-                        return receipt
-                    raise Exception(f"Transaction failed: {tx_hash}")
-            except Exception as e:
-                if "not found" not in str(e):
-                    raise
-            await asyncio.sleep(1)
-            attempts += 1
-        raise Exception(f"Transaction not confirmed after {max_attempts} attempts")
-
-async def main():
-    registration = AutoRegistration()
-    await registration.register_developers()
-
-if __name__ == "__main__":
-    asyncio.run(main())
+            signed_tx = self.w3.eth.account.sign_transaction(tx, self.private_key)
+            tx_hash = self.w3.eth.send_raw_transaction(signed_tx.rawTransaction)
+            return f"0x{tx_hash.hex()}"  # Add "0x" prefix
+        except Exception as e:
+            print(f"Failed to register developer: {str(e)}")
+            raise
