@@ -10,40 +10,38 @@ async def test_analysis():
         gh_client = GitHubClient()
         analyzer = DeveloperAnalyzer()
         
-        # Test developers
-        developers = ["gakonst"]  # Testing with one known web3 developer
+        # Test with known web3 developers
+        test_developers = ["gakonst", "samczsun"]
         
-        for dev in developers:
-            print(f"\nAnalyzing {dev}...")
+        for username in test_developers:
+            print(f"\nAnalyzing {username}...")
             
             # Get GitHub data
-            dev_data = await gh_client.get_developer_data(dev)
+            dev_data = await gh_client.get_developer_data(username)
             
-            if dev_data:
-                # Analyze developer
-                analysis = analyzer.analyze_developer(dev_data)
-                
-                if analysis:
-                    print("\nAnalysis Results:")
-                    print(json.dumps(analysis, indent=2))
-                    
-                    # Print key metrics
-                    print("\nKey Metrics:")
-                    print(f"Confidence Score: {analysis['confidence_score']}/100")
-                    print(f"Web3 Skill Level: {analysis['web3_skill_level']}")
-                    print(f"Recommendation: {analysis['recommendation']}")
-                    
-                    if analysis['recommendation'] == 'create_profile':
-                        print("\nInvestment Thesis:")
-                        for point in analysis['investment_thesis']:
-                            print(f"- {point}")
-                else:
-                    print("Analysis failed")
+            if not dev_data:
+                print(f"Could not fetch data for {username}")
+                continue
+            
+            print(f"Found developer data for {username}")
+            print(f"Followers: {dev_data['basic_info']['followers']}")
+            print(f"Public repos: {dev_data['basic_info']['public_repos']}")
+            print("\nTop repositories:")
+            for repo in dev_data['repositories'][:3]:
+                print(f"- {repo['name']}: {repo['stars']} stars")
+            
+            # Analyze data
+            print("\nPerforming AI analysis...")
+            analysis = analyzer.analyze_developer(dev_data)
+            
+            if analysis:
+                print("\nAnalysis results:")
+                print(json.dumps(analysis, indent=2))
             else:
-                print(f"Could not fetch data for {dev}")
+                print("Analysis failed")
 
     except Exception as e:
-        print(f"Error in test: {str(e)}")
+        print(f"Test failed with error: {str(e)}")
 
 if __name__ == "__main__":
     asyncio.run(test_analysis())

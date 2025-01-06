@@ -1,88 +1,112 @@
 # packages/ai-agents/src/auto_registration.py
-from web3 import Web3
+from github_client import GitHubClient
+from ai_analyzer import DeveloperAnalyzer
+from contract_integrator import ContractIntegrator
+from eth_account import Account
 import json
-from pathlib import Path
+import asyncio
+import os
+from dotenv import load_dotenv
 
-class AutoRegistration:
-    def __init__(self, rpc_url=None, private_key=None, registry_address=None, investment_address=None):
-        """Initialize with optional test parameters"""
-        self.w3 = None
-        self.registry = None
-        self.investment = None
-        self.initialized = False
+class AutoRegistrationAgent:
+    def __init__(self):
+        self.github = GitHubClient()
+        self.analyzer = DeveloperAnalyzer()
+        self.contract = ContractIntegrator()
         
-        # Allow injection for testing
-        self.rpc_url = rpc_url
-        self.private_key = private_key
-        self.registry_address = registry_address
-        self.investment_address = investment_address
+        # Parameters for token creation
+        self.min_confidence_score = 75  # Minimum score to create a profile
+        self.max_registrations = 3      # Maximum number of registrations per run
 
-    def initialize(self):
-        """Separate initialization to make testing easier"""
-        if self.initialized:
-            return
-
-        try:
-            # Setup web3
-            if not self.w3:
-                self.w3 = Web3(Web3.HTTPProvider(self.rpc_url))
-            
-            # Load contracts if addresses provided
-            if self.registry_address and self.investment_address:
-                self._load_contracts()
-            
-            self.initialized = True
-            return True
-        except Exception as e:
-            print(f"Initialization failed: {str(e)}")
-            return False
-
-    def _load_contracts(self):
-        """Load contract ABIs and create contract instances"""
-        try:
-            abi_dir = Path(__file__).parent / 'abi'
-            
-            # Load contract ABIs
-            with open(abi_dir / 'TalentRegistry.json') as f:
-                registry_abi = json.load(f)
-            with open(abi_dir / 'Investment.json') as f:
-                investment_abi = json.load(f)
-
-            # Create contract instances
-            self.registry = self.w3.eth.contract(
-                address=self.registry_address,
-                abi=registry_abi
-            )
-            self.investment = self.w3.eth.contract(
-                address=self.investment_address,
-                abi=investment_abi
-            )
-            return True
-        except Exception as e:
-            print(f"Failed to load contracts: {str(e)}")
-            self.registry = None
-            self.investment = None
-            return False
-
-    async def register_developer(self, username: str) -> str:
-        """Register a single developer"""
-        if not self.registry:
-            raise Exception("Registry contract not initialized")
+    async def discover_and_register(self):
+        """Main function to discover and register developers"""
+        print("Starting developer discovery and registration process...")
         
-        try:
-            tx = self.registry.functions.registerDeveloper(username).build_transaction({
-                'chainId': self.w3.eth.chain_id,
-                'gas': 2000000,
-                'maxFeePerGas': self.w3.eth.max_priority_fee,
-                'maxPriorityFeePerGas': self.w3.eth.max_priority_fee,
-                'nonce': self.w3.eth.get_transaction_count(
-                    self.w3.eth.account.from_key(self.private_key).address
-                ),
-            })
+        # Initial list of promising developers to scan
+        potential_developers = [
+            "gakonst",
+            "samczsun",
+            "frangio", 
+            "Arachnid",
+            "noxx3xxon",
+            "pcaversaccio"
+        ]
         
-            signed_tx = self.w3.eth.account.sign_transaction(tx, self.private_key)
-            tx_hash = self.w3.eth.send_raw_transaction(signed_tx.rawTransaction)
-            return f"0x{tx_hash.hex()}"  # Add "0x" prefix
-        except Exception as e:
-            print(f"Failed to register developer: {str(e)}")
-            raise
+        registrations = 0
+        results = []
+        
+        for username in potential_developers:
+            if registrations >= self.max_registrations:
+                break
+                
+            print(f"\nAnalyzing {username}...")
+            
+            # Skip if already registered
+            if self.contract.check_if_registered(username):
+                print(f"{username} is already registered")
+                continue
+            
+            # Get GitHub data
+            dev_data = await self.github.get_developer_data(username)
+            if not dev_data:
+                print(f"Could not fetch data for {username}")
+                continue
+            
+            # Analyze developer
+            analysis = self.analyzer.analyze_developer(dev_data)
+            if not analysis:
+                print(f"Could not analyze {username}")
+                continue
+            
+            print(f"Analysis complete for {username}")
+            print(f"Confidence Score: {analysis['confidence_score']}")
+            print(f"Web3 Skill Level: {analysis['web3_skill_level']}")
+            
+            # Check if developer meets criteria
+            if analysis['confidence_score'] >= self.min_confidence_score:
+                print(f"{username} meets criteria. Attempting registration...")
+                
+                # Generate token details
+                token_name = f"{username}Token"
+                token_symbol = f"${username[:4].upper()}"
+                
+                # Generate deterministic address for developer
+                developer_key = Account.create()
+                developer_address = developer_key.address
+                
+                # Register developer
+                result = self.contract.register_developer(
+                    username,
+                    developer_address,
+                    token_name,
+                    token_symbol
+                )
+                
+                if result['success']:
+                    print(f"Successfully registered {username}")
+                    registrations += 1
+                    results.append({
+                        'username': username,
+                        'developer_address': developer_address,
+                        'token_address': result['token_address'],
+                        'analysis': analysis
+                    })
+                else:
+                    print(f"Failed to register {username}: {result.get('error')}")
+            else:
+                print(f"{username} does not meet minimum criteria")
+        
+        # Save results
+        if results:
+            with open('registration_results.json', 'w') as f:
+                json.dump(results, f, indent=2)
+            print(f"\nRegistered {len(results)} developers successfully")
+        
+        return results
+
+async def main():
+    agent = AutoRegistrationAgent()
+    await agent.discover_and_register()
+
+if __name__ == "__main__":
+    asyncio.run(main())
