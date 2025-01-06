@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital@0;1&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -10,24 +12,16 @@
     }
 
     body {
-        @apply bg-gray-50 font-sans;
+        @apply bg-white font-sans;
+    }
+
+    h1 {
+        font-family: 'Playfair Display', serif;
     }
 }
 
 @layer components {
     .nexon-gradient {
         background: linear-gradient(135deg, var(--gradient-start), var(--gradient-middle), var(--gradient-end));
-    }
-
-    .nexon-card {
-        @apply bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-200;
-    }
-
-    .nexon-button {
-        @apply px-4 py-2 rounded-md font-medium transition-all duration-200 bg-gradient-to-r from-[#FF7E6B] via-[#FFD700] to-[#40E0D0] hover:opacity-90 text-white shadow-md;
-    }
-
-    .nav-link {
-        @apply text-gray-700 hover:text-gray-900 font-medium transition-colors duration-200;
     }
 }
