@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Asterisk } from 'lucide-react';
 
 interface LayoutProps {
     children: React.ReactNode;
@@ -12,9 +11,8 @@ export function Layout({ children }: LayoutProps) {
             <header className="border-b">
                 <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
                     <div className="flex items-center">
-                        <Link to="/" className="flex items-center space-x-2">
-                            <Asterisk className="h-8 w-8 text-[#FF7E6B]" />
-                            <span className="text-2xl font-bold">nexon</span>
+                        <Link to="/">
+                            <img src="/nexon_black_logo.png" alt="Nexon" className="h-8" />
                         </Link>
                     </div>
 
