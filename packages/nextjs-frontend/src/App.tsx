@@ -5,6 +5,7 @@ import { Home } from './pages/Home';
 import { Dashboard } from './pages/Dashboard';
 import { Register } from './pages/Register';
 import { Scout } from './pages/Scout';
+import { Profile } from './pages/Profile';
 
 function App() {
     return (
@@ -14,6 +15,7 @@ function App() {
                 <Route path="/discover" element={<Dashboard />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/scout" element={<Scout />} />
+                <Route path="/profile/:handle" element={<Profile />} />
             </Routes>
         </Router>
     );

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Search, LogIn, ArrowUpDown, Heart } from 'lucide-react';
+import { CreatorType, inputConfigs } from '../types/creator';
 
 const categories = ['Featured', 'Developers', 'NFT-Creators', 'Musicians', 'Traders'];
 
@@ -185,12 +186,12 @@ export function Dashboard() {
                 </div>
 
                 <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                    {/* Creator Cards and Activity Section */}
                     <div className="grid grid-cols-3 gap-6 mb-16">
                         {/* Creator Cards */}
                         <div className="col-span-2 grid grid-cols-2 gap-6">
                             {mockCreators.map((creator) => (
-                                <div
+                                <Link
+                                    to={`/profile/${creator.handle.replace('@', '')}`}
                                     key={creator.id}
                                     className="bg-white/90 backdrop-blur-sm rounded-lg p-4 hover:shadow-lg transition-shadow border border-gray-100"
                                 >
@@ -228,7 +229,7 @@ export function Dashboard() {
                                             </div>
                                         ))}
                                     </div>
-                                </div>
+                                </Link>
                             ))}
                         </div>
 

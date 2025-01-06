@@ -1,5 +1,24 @@
 export type CreatorType = 'Developer' | 'NFT-Creator' | 'Musician' | 'Trader';
 
+export interface Creator {
+    id: string;
+    handle: string;
+    name: string;
+    avatar: string;
+    price: number;
+    skills: string[];
+    verified?: boolean;
+    tokenSymbol: string;
+    bio?: string;
+    metrics?: {
+        github: number;
+        technical: number;
+        web3: number;
+        community: number;
+        growth: number;
+    };
+}
+
 export interface InputConfig {
     label: string;
     placeholder: string;
