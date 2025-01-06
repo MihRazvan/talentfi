@@ -1,12 +1,10 @@
 # packages/ai-agents/src/auto_registration.py
+import asyncio
 from github_client import GitHubClient
 from ai_analyzer import DeveloperAnalyzer
 from contract_integrator import ContractIntegrator
 from eth_account import Account
 import json
-import asyncio
-import os
-from dotenv import load_dotenv
 
 class AutoRegistrationAgent:
     def __init__(self):
@@ -14,23 +12,15 @@ class AutoRegistrationAgent:
         self.analyzer = DeveloperAnalyzer()
         self.contract = ContractIntegrator()
         
-        # Parameters for token creation
-        self.min_confidence_score = 75  # Minimum score to create a profile
-        self.max_registrations = 3      # Maximum number of registrations per run
-
+        self.min_confidence_score = 75
+        self.max_registrations = 3
+        
     async def discover_and_register(self):
-        """Main function to discover and register developers"""
         print("Starting developer discovery and registration process...")
         
-        # Initial list of promising developers to scan
-        potential_developers = [
-            "gakonst",
-            "samczsun",
-            "frangio", 
-            "Arachnid",
-            "noxx3xxon",
-            "pcaversaccio"
-        ]
+        # Dynamically discover developers
+        potential_developers = await self.github.discover_web3_developers(limit=10)
+        print(f"Found {len(potential_developers)} potential developers")
         
         registrations = 0
         results = []
@@ -62,19 +52,15 @@ class AutoRegistrationAgent:
             print(f"Confidence Score: {analysis['confidence_score']}")
             print(f"Web3 Skill Level: {analysis['web3_skill_level']}")
             
-            # Check if developer meets criteria
             if analysis['confidence_score'] >= self.min_confidence_score:
                 print(f"{username} meets criteria. Attempting registration...")
                 
-                # Generate token details
                 token_name = f"{username}Token"
                 token_symbol = f"${username[:4].upper()}"
                 
-                # Generate deterministic address for developer
                 developer_key = Account.create()
                 developer_address = developer_key.address
                 
-                # Register developer
                 result = self.contract.register_developer(
                     username,
                     developer_address,
@@ -96,7 +82,6 @@ class AutoRegistrationAgent:
             else:
                 print(f"{username} does not meet minimum criteria")
         
-        # Save results
         if results:
             with open('registration_results.json', 'w') as f:
                 json.dump(results, f, indent=2)

@@ -1,126 +1,87 @@
 [
   {
-    "username": "gakonst",
-    "developer_address": "0xe9725D4b61d1CFa734eB117A4552Adf68CA2A1D3",
-    "token_address": "0x8D1027fAfe5Ab0dB9f97c2f8E1058ab32d9E180F",
+    "username": "OffcierCia",
+    "developer_address": "0xb1df8EE4bf643D4323C96541Cb455F4B8D4F24f5",
+    "token_address": "0x5c7ae63501f141e3053E49A7cC7F51271BA554D3",
     "analysis": {
       "confidence_score": 85,
-      "web3_skill_level": "Advanced",
+      "web3_skill_level": "Intermediate",
       "strengths": [
-        "Strong expertise in Solidity and Rust",
-        "Experience with MEV, layer 2 solutions, proof of stake, and zkps",
-        "Co-founder of Paradigm, a prominent blockchain investment firm"
+        "Strong background in threat research",
+        "Highly active in developing DeFi and blockchain-related tools",
+        "Significant community engagement based on stars and followers"
       ],
       "growth_areas": [
-        "Further exploration of layer 2 scaling solutions",
-        "Enhancing proficiency in TypeScript for broader development opportunities"
+        "Enhancing technical expertise in blockchain programming languages",
+        "Building a more diverse portfolio of projects",
+        "Increasing participation in the blockchain development community"
       ],
       "recommendation": "review",
       "specialties": [
-        "MEV",
-        "Layer 2 scaling",
-        "Proof of Stake",
-        "Zero-Knowledge Proofs"
+        "DeFi development",
+        "Blockchain security",
+        "Threat intelligence"
       ],
       "token_value_factors": {
-        "github_metrics": 9,
-        "technical_expertise": 8,
-        "web3_expertise": 9,
-        "community_influence": 7,
+        "github_metrics": 8,
+        "technical_expertise": 7,
+        "web3_expertise": 6,
+        "community_influence": 9,
         "growth_potential": 8
       },
       "investment_thesis": [
-        "Georgios has a strong technical background in blockchain development and a proven track record with high-profile projects and investments.",
-        "His expertise in MEV, layer 2 solutions, proof of stake, and zkps positions him well for contributing to and shaping the future of web3 technologies."
+        "Demonstrated capability to build valuable tools for the DeFi and blockchain community",
+        "Strong potential for future growth and impact in web3 space"
       ],
       "risk_factors": [
-        "Limited public activity on GitHub despite impressive repositories",
-        "Potential focus on investment activities at Paradigm may limit direct development contributions"
+        "Limited experience in blockchain programming languages such as Solidity"
       ],
-      "analyzed_at": "2016-03-12T18:50:36Z",
-      "github_url": "https://github.com/gakonst"
+      "analyzed_at": "2021-06-11T22:21:57Z",
+      "github_url": "https://github.com/OffcierCia"
     }
   },
   {
-    "username": "frangio",
-    "developer_address": "0x21345b8eEFe356B4f841F96F467C81Fb36c2883a",
-    "token_address": "0xa3843cADbe429B5999e073263c22350B932B7574",
+    "username": "Anish-Agnihotri",
+    "developer_address": "0x908FB302d930C1295ef4d4f58aC702aADBaf3b98",
+    "token_address": "0x01F08B0CC8D93F630197372de52662E73bCD9D9e",
     "analysis": {
       "confidence_score": 85,
       "web3_skill_level": "Advanced",
       "strengths": [
-        "Strong expertise in TypeScript and Solidity",
-        "Experienced in building web3 applications",
-        "Active contributor with well-received repositories"
+        "Solidity smart contract development",
+        "Experience with MEV contracts",
+        "Familiarity with Uniswap V2",
+        "NFT distribution and on-chain metadata generation",
+        "Flash loan and arbitrage contract development"
       ],
       "growth_areas": [
-        "Enhancing JavaScript skills",
-        "Diversifying blockchain project experience"
+        "Diversifying language expertise beyond Solidity",
+        "Contributing to more open source projects",
+        "Enhancing knowledge of decentralized finance (DeFi) protocols"
       ],
       "recommendation": "review",
       "specialties": [
-        "Upgradeable proxies",
-        "Smart contract testing",
-        "ERC standards",
-        "Hardhat plugins"
+        "Smart contract development",
+        "NFT projects",
+        "Flash loan strategies"
       ],
       "token_value_factors": {
         "github_metrics": 8,
         "technical_expertise": 9,
         "web3_expertise": 8,
         "community_influence": 7,
-        "growth_potential": 8
+        "growth_potential": 9
       },
       "investment_thesis": [
-        "High potential in contributing to DeFi and NFT projects",
-        "Likely to excel in developing blockchain tools and libraries"
+        "The developer has a strong track record in creating popular repositories in the web3 space.",
+        "With further growth in expertise and community engagement, the developer could become a notable figure in the blockchain development community."
       ],
       "risk_factors": [
-        "Relatively low JavaScript expertise compared to TypeScript and Solidity"
+        "Limited diversity in language skills may limit adaptability to changing technology trends.",
+        "Relatively lower community influence compared to other developers with similar technical expertise."
       ],
-      "analyzed_at": "2010-11-15T01:57:09Z",
-      "github_url": "https://github.com/frangio"
-    }
-  },
-  {
-    "username": "Arachnid",
-    "developer_address": "0x43143C9af381eA2616F37885628e6cCF913cC252",
-    "token_address": "0x7ebd38726340766202aF4Cc8E39b282a012B37B7",
-    "analysis": {
-      "confidence_score": 85,
-      "web3_skill_level": "Advanced",
-      "strengths": [
-        "Strong expertise in Solidity and Go languages",
-        "Significant experience in developing Ethereum smart contracts and tools",
-        "Active involvement in the Ethereum community with highly starred repositories"
-      ],
-      "growth_areas": [
-        "Enhancing proficiency in TypeScript and JavaScript for broader blockchain development",
-        "Diversifying into other blockchain platforms beyond Ethereum"
-      ],
-      "recommendation": "review",
-      "specialties": [
-        "Solidity smart contracts",
-        "Ethereum blockchain development",
-        "Web3 tooling"
-      ],
-      "token_value_factors": {
-        "github_metrics": 9,
-        "technical_expertise": 8,
-        "web3_expertise": 9,
-        "community_influence": 8,
-        "growth_potential": 8
-      },
-      "investment_thesis": [
-        "Nick Johnson shows exceptional promise in the web3 and blockchain space with a strong track record of impactful projects and contributions.",
-        "His advanced skills in Solidity and Go, along with active participation in the Ethereum ecosystem, position him as a valuable asset for web3 development teams and projects."
-      ],
-      "risk_factors": [
-        "Limited experience in languages like TypeScript and JavaScript may pose challenges in projects requiring diverse blockchain development skills.",
-        "Heavy focus on Ethereum may limit exposure to opportunities in other emerging blockchain platforms."
-      ],
-      "analyzed_at": "2008-07-22T13:51:48Z",
-      "github_url": "https://github.com/Arachnid"
+      "analyzed_at": "2013-05-10T17:44:13Z",
+      "github_url": "https://github.com/Anish-Agnihotri"
     }
   }
 ]

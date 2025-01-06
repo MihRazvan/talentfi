@@ -3,8 +3,7 @@ import httpx
 import os
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
-from typing import Dict, Any, List
-import asyncio
+from typing import Dict, Any, List, Set
 
 class GitHubClient:
     def __init__(self):
@@ -17,27 +16,99 @@ class GitHubClient:
             "X-GitHub-Api-Version": "2022-11-28"
         }
         
-        # MVP criteria for developers
         self.min_requirements = {
             "followers": 50,
             "public_repos": 10,
-            "account_age_days": 180,  # 6 months
-            "min_stars": 100  # At least one repo with 100+ stars
+            "account_age_days": 180,
+            "min_stars": 100
         }
 
-    async def get_developer_data(self, username: str) -> Dict[str, Any]:
-        """Get comprehensive developer data from GitHub"""
+    async def discover_web3_developers(self, limit: int = 10) -> List[str]:
+        developers: Set[str] = set()
+        
+        # Expanded search criteria
+        queries = [
+            "language:solidity stars:>50",
+            "language:solidity followers:>100",
+            "web3 language:javascript stars:>200",
+            "ethereum language:typescript stars:>200",
+            "blockchain language:rust stars:>200",
+            "defi language:solidity",
+            "nft language:solidity",
+            "dao language:solidity",
+            "zk language:solidity",
+            "openzeppelin-contracts in:readme"
+        ]
+        
         async with httpx.AsyncClient() as client:
-            # Get basic user info
+            for query in queries:
+                if len(developers) >= limit:
+                    break
+                    
+                response = await client.get(
+                    f"{self.base_url}/search/repositories",
+                    params={"q": query, "sort": "stars", "order": "desc", "per_page": 50},  # Increased from 20 to 50
+                    headers=self.headers
+                )
+                
+                if response.status_code == 200:
+                    repos = response.json().get("items", [])
+                    for repo in repos:
+                        owner = repo["owner"]["login"]
+                        if await self._meets_criteria(client, owner):
+                            developers.add(owner)
+                            if len(developers) >= limit:
+                                break
+                                
+        return list(developers)
+
+    async def _meets_criteria(self, client: httpx.AsyncClient, username: str) -> bool:
+        """Check if developer meets minimum requirements"""
+        response = await client.get(
+            f"{self.base_url}/users/{username}",
+            headers=self.headers
+        )
+        
+        if response.status_code != 200:
+            return False
+            
+        user_data = response.json()
+        
+        # Check basic criteria
+        if user_data.get("followers", 0) < self.min_requirements["followers"]:
+            return False
+            
+        if user_data.get("public_repos", 0) < self.min_requirements["public_repos"]:
+            return False
+            
+        # Check account age
+        created_at = datetime.strptime(user_data.get("created_at", ""), "%Y-%m-%dT%H:%M:%SZ")
+        account_age = datetime.now() - created_at
+        if account_age.days < self.min_requirements["account_age_days"]:
+            return False
+            
+        # Check repository stars
+        repos_response = await client.get(
+            f"{self.base_url}/users/{username}/repos?sort=stars&direction=desc",
+            headers=self.headers
+        )
+        
+        if repos_response.status_code == 200:
+            repos = repos_response.json()
+            if repos and repos[0].get("stargazers_count", 0) < self.min_requirements["min_stars"]:
+                return False
+        else:
+            return False
+            
+        return True
+
+    async def get_developer_data(self, username: str) -> Dict[str, Any]:
+        """Get comprehensive developer data"""
+        async with httpx.AsyncClient() as client:
             user_data = await self._get_user_info(client, username)
             if not user_data:
                 return None
                 
-            # Early return if developer doesn't meet basic criteria
-            if not self._meets_basic_criteria(user_data):
-                return None
-
-            # Get detailed data
             repos_data = await self._get_user_repos(client, username)
             activity_data = await self._get_contribution_activity(client, username)
             languages_data = await self._get_developer_languages(client, username, repos_data)
