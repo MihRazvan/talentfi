@@ -5,7 +5,7 @@ import { CreatorType, inputConfigs } from '../types/creator';
 
 // ... (keep existing type definitions and configs)
 
-export function Register() {
+export function Scout() {
     const [selectedType, setSelectedType] = useState<CreatorType>('Developer');
     const [identifier, setIdentifier] = useState('');
     const [isVerifying, setIsVerifying] = useState(false);
@@ -25,8 +25,8 @@ export function Register() {
 
                     <div className="flex items-center space-x-8">
                         <Link to="/discover" className="text-sm font-medium hover:text-gray-900">discover</Link>
-                        <Link to="/scout" className="text-sm font-medium hover:text-gray-900">scout</Link>
-                        <Link to="/register" className="text-sm font-medium text-gray-900">register</Link>
+                        <Link to="/scout" className="text-sm font-medium text-gray-900">scout</Link>
+                        <Link to="/register" className="text-sm font-medium hover:text-gray-900">register</Link>
                         <button className="flex items-center space-x-1 text-sm font-medium hover:text-gray-900">
                             <span>login</span>
                             <LogIn className="h-4 w-4" />
@@ -45,13 +45,49 @@ export function Register() {
             </div>
 
             {/* Main Content */}
-            <main className="flex-1 flex flex-col items-center justify-center py-16 px-4 text-center">
-                <div className="max-w-md w-full space-y-12">
-                    <div>
-                        <h1 className="text-4xl font-playfair italic mb-4">Join Nexon</h1>
-                        <p className="text-gray-600">Become part of the next generation of creators</p>
+            <div className="flex-1 flex flex-col items-center text-center">
+                <div className="max-w-3xl mx-auto px-4 py-16">
+                    <h1 className="text-4xl font-playfair mb-8">Discover Talent, Earn Rewards</h1>
+
+                    <p className="mb-12 text-lg">
+                        Become a talent scout and shape the future of creativity. By manually adding rising stars - whether developers, NFT-Creators, musicians or traders-you help them shine on the discover page.
+                    </p>
+
+                    <div className="mb-12">
+                        <h2 className="text-xl font-medium mb-4">How It Works</h2>
+                        <ol className="space-y-2">
+                            <li>1. <span className="font-medium">Spot Talent:</span> Add promising creators to the platform.</li>
+                            <li>2. <span className="font-medium">AI Review:</span> Our system validates their profile.</li>
+                            <li>3. <span className="font-medium">Earn Rewards:</span> When they claim their profile via nexon, you earn a Scout Reward (SR) - 2% of trading revenue.</li>
+                        </ol>
                     </div>
 
+                    <div className="mb-12">
+                        <h2 className="text-xl font-medium mb-4">Win-Win for Everyone</h2>
+                        <ul className="space-y-2">
+                            <li>• <span className="font-medium">Scouts:</span> Share in the success of the creators you discover.</li>
+                            <li>• <span className="font-medium">Creators:</span> Keep 10% of trading revenue with the Creator Rewards (CR).</li>
+                        </ul>
+                    </div>
+
+                    <h2 className="text-2xl font-playfair italic mb-8">
+                        Start scouting today and turn your eye for talent<br />into tangible rewards!
+                    </h2>
+
+                    <img src="/scout/arrow1.png" alt="" className="w-8 mx-auto animate-bounce" />
+                </div>
+
+                {/* Stairs Divider */}
+                <div className="w-full h-32">
+                    <img
+                        src="/scout/coloredstairs_upsidedown.png"
+                        alt=""
+                        className="w-full h-full object-contain"
+                    />
+                </div>
+
+                {/* Scout Form */}
+                <div className="max-w-md w-full mx-auto px-4 py-16 space-y-12">
                     <div className="space-y-8">
                         {/* Category Selection */}
                         <div>
@@ -98,19 +134,14 @@ export function Register() {
                         {isVerifying && (
                             <div className="text-center space-y-6">
                                 <p className="text-gray-600">Waiting for verification...</p>
-                                <div className="flex justify-center space-x-4">
-                                    <button disabled className="px-6 py-2 bg-gray-100 text-gray-400 rounded-lg cursor-not-allowed">
-                                        register
-                                    </button>
-                                    <button disabled className="px-6 py-2 bg-gray-100 text-gray-400 rounded-lg cursor-not-allowed">
-                                        claim
-                                    </button>
-                                </div>
+                                <button disabled className="px-6 py-2 bg-gray-100 text-gray-400 rounded-lg cursor-not-allowed">
+                                    Add Creator
+                                </button>
                             </div>
                         )}
                     </div>
                 </div>
-            </main>
+            </div>
 
             {/* Footer */}
             <footer className="relative h-16 flex items-center justify-center">
