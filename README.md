@@ -92,7 +92,7 @@ Nexon synthesizes collective intelligence about creator potential into tradable 
 
 ## User Flow
 
-![user flow (5)](https://github.com/user-attachments/assets/80f221a5-aa00-447a-b67d-a765a04bbccc)
+![user flow (6)](https://github.com/user-attachments/assets/4d848e3f-ec64-4439-a614-39225d6deb39)
 
 ## Tech Stack
 
