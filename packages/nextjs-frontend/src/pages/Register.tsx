@@ -2,78 +2,29 @@ import React, { useState } from 'react';
 import { useWalletContext } from '../context/WalletContext';
 import { Code2, Palette, Music, TrendingUp, Loader2, CheckCircle2, XCircle, Github, Info } from 'lucide-react';
 
-type CreatorType = 'developer' | 'nft-artist' | 'musician' | 'trader';
-
-interface CategoryOption {
-    id: CreatorType;
-    label: string;
-    icon: React.ReactNode;
-    placeholder: string;
-    inputType: string;
-    authType?: 'github' | 'wallet';
-}
-
 const Register = () => {
-    const { connectWallet } = useWalletContext();
-    const [selectedCategory, setSelectedCategory] = useState<CreatorType | null>(null);
+    const [selectedCategory, setSelectedCategory] = useState('');
     const [identifier, setIdentifier] = useState('');
     const [isVerifying, setIsVerifying] = useState(false);
-    const [verificationStatus, setVerificationStatus] = useState<'none' | 'exists' | 'new'>('none');
+    const [verificationStatus, setVerificationStatus] = useState('none'); // none, exists, new
+    const [error, setError] = useState('');
     const [isRegistering, setIsRegistering] = useState(false);
-    const [needsAuth, setNeedsAuth] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-
-    const categories: CategoryOption[] = [
-        {
-            id: 'developer',
-            label: 'Developer',
-            icon: <Code2 className="w-5 h-5" />,
-            placeholder: 'Enter GitHub Username',
-            inputType: 'text',
-            authType: 'github'
-        },
-        {
-            id: 'nft-artist',
-            label: 'NFT Artist',
-            icon: <Palette className="w-5 h-5" />,
-            placeholder: 'Enter OpenSea Wallet',
-            inputType: 'text',
-            authType: 'wallet'
-        },
-        {
-            id: 'musician',
-            label: 'Musician',
-            icon: <Music className="w-5 h-5" />,
-            placeholder: 'Enter Spotify Account',
-            inputType: 'text'
-        },
-        {
-            id: 'trader',
-            label: 'Trader',
-            icon: <TrendingUp className="w-5 h-5" />,
-            placeholder: 'Enter DeBank Wallet',
-            inputType: 'text',
-            authType: 'wallet'
-        }
-    ];
+    const { isConnected } = useWalletContext();
 
     const handleVerify = async () => {
         if (!identifier) return;
-
         setIsVerifying(true);
-        setError(null);
+        setError('');
 
         try {
             // Simulate API call
             await new Promise(resolve => setTimeout(resolve, 2000));
 
-            const selectedCat = categories.find(c => c.id === selectedCategory);
-            if (selectedCat?.authType === 'github') {
-                setNeedsAuth(true);
-                setVerificationStatus('none');
+            // Mock verification result
+            if (identifier === 'existinguser') {
+                setVerificationStatus('exists');
             } else {
-                // For demo, set as existing if username is "existinguser"
-                setVerificationStatus(identifier.toLowerCase() === 'existinguser' ? 'exists' : 'new');
+                setVerificationStatus('new');
             }
         } catch (err) {
             setError('Verification failed. Please try again.');
@@ -84,13 +35,10 @@ const Register = () => {
 
     const handleGithubAuth = async () => {
         setIsVerifying(true);
-        setError(null);
-
         try {
-            // Simulate GitHub OAuth process
+            // Simulate GitHub OAuth flow
             await new Promise(resolve => setTimeout(resolve, 2000));
             setVerificationStatus('new');
-            setNeedsAuth(false);
         } catch (err) {
             setError('GitHub authentication failed. Please try again.');
         } finally {
@@ -98,32 +46,25 @@ const Register = () => {
         }
     };
 
-    const handleRegister = async () => {
+    const handleClaim = async () => {
         setIsRegistering(true);
-        setError(null);
-
         try {
-            await connectWallet();
-            // Simulate registration process
             await new Promise(resolve => setTimeout(resolve, 2000));
-            window.location.href = '/discover';
+            // Handle claim logic
         } catch (err) {
-            setError('Registration failed. Please try again.');
+            setError('Failed to claim profile. Please try again.');
+        } finally {
             setIsRegistering(false);
         }
     };
 
-    const handleClaim = async () => {
+    const handleRegister = async () => {
         setIsRegistering(true);
-        setError(null);
-
         try {
-            await connectWallet();
-            // Simulate claim process
             await new Promise(resolve => setTimeout(resolve, 2000));
-            setError('Claim failed: Account not eligible');
+            // Handle registration logic
         } catch (err) {
-            setError('Claim failed. Please try again.');
+            setError('Failed to register profile. Please try again.');
         } finally {
             setIsRegistering(false);
         }
@@ -159,24 +100,29 @@ const Register = () => {
                         <div className="space-y-3 mb-6">
                             <h2 className="text-sm font-medium text-slate-700">Select your category</h2>
                             <div className="grid grid-cols-2 gap-4">
-                                {categories.map(category => (
+                                {[
+                                    { id: 'developer', label: 'Developer', icon: Code2 },
+                                    { id: 'nft-artist', label: 'NFT Artist', icon: Palette },
+                                    { id: 'musician', label: 'Musician', icon: Music },
+                                    { id: 'trader', label: 'Trader', icon: TrendingUp }
+                                ].map(category => (
                                     <button
                                         key={category.id}
                                         onClick={() => {
                                             setSelectedCategory(category.id);
-                                            setNeedsAuth(false);
                                             setVerificationStatus('none');
                                             setIdentifier('');
                                         }}
-                                        className={`p-4 rounded-xl border-2 transition-all flex items-center space-x-3
-                          ${selectedCategory === category.id
+                                        className={`p-4 rounded-xl border-2 transition-all
+                      ${selectedCategory === category.id
                                                 ? 'border-indigo-500 bg-indigo-50'
                                                 : 'border-slate-200 hover:border-slate-300'}`}
                                     >
-                                        <div className={`${selectedCategory === category.id ? 'text-indigo-500' : 'text-slate-500'}`}>
-                                            {category.icon}
-                                        </div>
-                                        <span className={`font-medium ${selectedCategory === category.id ? 'text-indigo-500' : 'text-slate-700'}`}>
+                                        <category.icon className={`w-6 h-6 mx-auto mb-2 
+                      ${selectedCategory === category.id ? 'text-indigo-500' : 'text-slate-500'}`}
+                                        />
+                                        <span className={`block text-sm font-medium
+                      ${selectedCategory === category.id ? 'text-indigo-500' : 'text-slate-700'}`}>
                                             {category.label}
                                         </span>
                                     </button>
@@ -195,90 +141,57 @@ const Register = () => {
                                         {selectedCategory === 'trader' && 'DeBank Wallet Address'}
                                     </label>
                                     <input
-                                        type={categories.find(c => c.id === selectedCategory)?.inputType}
-                                        placeholder={categories.find(c => c.id === selectedCategory)?.placeholder}
+                                        type="text"
+                                        placeholder={`Enter your ${selectedCategory} identifier`}
                                         value={identifier}
                                         onChange={(e) => setIdentifier(e.target.value)}
                                         className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
                                     />
-                                    <p className="text-xs text-slate-500">
-                                        {selectedCategory === 'developer' && 'Enter your GitHub username to verify your developer profile'}
-                                        {selectedCategory === 'nft-artist' && 'Enter your OpenSea wallet to verify your NFT creations'}
-                                        {selectedCategory === 'musician' && 'Enter your Spotify account ID to verify your music profile'}
-                                        {selectedCategory === 'trader' && 'Enter your DeBank wallet to verify your trading history'}
-                                    </p>
                                 </div>
 
                                 {/* Verify Button */}
-                                {!needsAuth && !verificationStatus && (
+                                {verificationStatus === 'none' && (
                                     <button
                                         onClick={handleVerify}
                                         disabled={isVerifying || !identifier}
                                         className="w-full py-2 px-4 rounded-lg bg-indigo-500 text-white font-medium 
-                          hover:bg-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                      hover:bg-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                                     >
                                         {isVerifying ? (
                                             <>
                                                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                                Verifying your credentials...
+                                                Verifying...
                                             </>
                                         ) : 'Verify Credentials'}
                                     </button>
                                 )}
 
                                 {/* GitHub Auth Button */}
-                                {needsAuth && (
-                                    <div className="space-y-3">
-                                        <div className="bg-slate-50 rounded-lg p-3 text-sm text-slate-600">
-                                            We need to verify your GitHub account to proceed. This helps us ensure the authenticity of developer profiles.
-                                        </div>
-                                        <button
-                                            onClick={handleGithubAuth}
-                                            disabled={isVerifying}
-                                            className="w-full py-2 px-4 rounded-lg bg-slate-800 text-white font-medium 
-                            hover:bg-slate-900 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-                                        >
-                                            {isVerifying ? (
-                                                <>
-                                                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                                    Authenticating with GitHub...
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <Github className="w-4 h-4 mr-2" />
-                                                    Authenticate with GitHub
-                                                </>
-                                            )}
-                                        </button>
-                                    </div>
+                                {selectedCategory === 'developer' && verificationStatus === 'new' && (
+                                    <button
+                                        onClick={handleGithubAuth}
+                                        className="w-full py-2 px-4 rounded-lg bg-slate-800 text-white font-medium 
+                      hover:bg-slate-900 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                                    >
+                                        <Github className="w-4 h-4 mr-2" />
+                                        Authenticate with GitHub
+                                    </button>
                                 )}
 
                                 {/* Action Buttons */}
                                 {verificationStatus !== 'none' && (
                                     <div className="space-y-4">
-                                        <div className="bg-slate-50 rounded-lg p-3 text-sm">
-                                            {verificationStatus === 'exists' ? (
-                                                <p className="text-slate-600">
-                                                    We found an existing profile for this account. You can claim it to gain access.
-                                                </p>
-                                            ) : (
-                                                <p className="text-slate-600">
-                                                    Great! You can now register as a creator. This will create your creator token and profile.
-                                                </p>
-                                            )}
-                                        </div>
-
                                         <div className="flex space-x-4">
                                             <button
                                                 onClick={handleClaim}
-                                                disabled={verificationStatus !== 'exists' || isRegistering}
+                                                disabled={verificationStatus !== 'exists' || isRegistering || !isConnected}
                                                 className="flex-1 py-2 px-4 rounded-lg bg-emerald-500 text-white font-medium 
-                              hover:bg-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                          hover:bg-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                                             >
                                                 {isRegistering ? (
                                                     <>
                                                         <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                                        Processing claim...
+                                                        Claiming...
                                                     </>
                                                 ) : (
                                                     <>
@@ -289,14 +202,14 @@ const Register = () => {
                                             </button>
                                             <button
                                                 onClick={handleRegister}
-                                                disabled={verificationStatus !== 'new' || isRegistering}
+                                                disabled={verificationStatus !== 'new' || isRegistering || !isConnected}
                                                 className="flex-1 py-2 px-4 rounded-lg bg-indigo-500 text-white font-medium 
-                              hover:bg-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                          hover:bg-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                                             >
                                                 {isRegistering ? (
                                                     <>
                                                         <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                                        Creating profile...
+                                                        Registering...
                                                     </>
                                                 ) : (
                                                     <>

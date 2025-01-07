@@ -226,7 +226,21 @@ const Scout = () => {
                                 </div>
                             </div>
                         )}
-
+                        {result && (
+                            <div className="mt-8">
+                                <button
+                                    onClick={() => {/* Handle registration */ }}
+                                    className="w-full py-3 px-4 rounded-lg bg-emerald-500 text-white font-medium 
+        hover:bg-emerald-600 transition-all flex items-center justify-center"
+                                >
+                                    <Sparkles className="w-4 h-4 mr-2" />
+                                    Register This Creator
+                                </button>
+                                <p className="text-sm text-center text-slate-600 mt-2">
+                                    You'll earn 2% of all future buys when they claim their profile!
+                                </p>
+                            </div>
+                        )}
                         {/* Error Message */}
                         {error && (
                             <div className="mt-4 p-3 rounded-lg bg-red-50 text-red-600 text-sm">
