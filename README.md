@@ -31,7 +31,7 @@ Talent discovery seems broken. Success is often dictated by followers, social cl
 
 ### The Proto-Info Finance
 
-Nexon synthesizes collective intelligence about creator potential into tradable markets. This "proto-info finance" model aligns with concepts outlined in Vitalik Buterin´s [Info Finance](https://vitalik.eth.limo/general/2024/11/09/infofinance.html).
+Nexon synthesizes collective intelligence about creator potential into tradable markets. This "proto-info finance" model aligns with concepts outlined in Vitalik Buterin´s [Info Finance](https://vitalik.eth.limo/general/2024/11/09/infofinance.html) and Robin Hanson´s [Prestige Futures](https://www.overcomingbias.com/p/more-academic-prestige-futureshtml).
 
 ![content (2)](https://github.com/user-attachments/assets/c9513a98-9a08-41e0-8394-5fa2e05b906c)
 
@@ -91,6 +91,8 @@ Nexon synthesizes collective intelligence about creator potential into tradable 
        - Detailed feedback provided.
 
 ## User Flow
+
+![user flow (4)](https://github.com/user-attachments/assets/4148980e-a2bb-419f-8bd9-065513aaade4)
 
 ## Tech Stack
 
