@@ -4,6 +4,7 @@ import os
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 from typing import Dict, Any, List, Set
+import asyncio
 
 class GitHubClient:
     def __init__(self):
@@ -15,92 +16,62 @@ class GitHubClient:
             "Accept": "application/vnd.github+json",
             "X-GitHub-Api-Version": "2022-11-28"
         }
-        
-        self.min_requirements = {
-            "followers": 50,
-            "public_repos": 10,
-            "account_age_days": 180,
-            "min_stars": 100
-        }
 
     async def discover_web3_developers(self, limit: int = 10) -> List[str]:
         developers: Set[str] = set()
-        
-        # Expanded search criteria
         queries = [
-            "language:solidity stars:>50",
-            "language:solidity followers:>100",
-            "web3 language:javascript stars:>200",
-            "ethereum language:typescript stars:>200",
-            "blockchain language:rust stars:>200",
-            "defi language:solidity",
-            "nft language:solidity",
-            "dao language:solidity",
-            "zk language:solidity",
-            "openzeppelin-contracts in:readme"
+            "language:solidity followers:>500 type:user",
+            "ethereum language:solidity stars:>100 type:user",
+            "web3 solidity followers:>200 type:user",
+            "web3 smart-contracts stars:>100 type:user",
+            "blockchain solidity contributions:>100 type:user"
         ]
-        
-        async with httpx.AsyncClient() as client:
+
+        async with httpx.AsyncClient(timeout=30.0) as client:
             for query in queries:
-                if len(developers) >= limit:
-                    break
-                    
                 response = await client.get(
-                    f"{self.base_url}/search/repositories",
-                    params={"q": query, "sort": "stars", "order": "desc", "per_page": 50},  # Increased from 20 to 50
+                    f"{self.base_url}/search/users",
+                    params={
+                        "q": query,
+                        "sort": "followers",
+                        "order": "desc",
+                        "per_page": 50
+                    },
                     headers=self.headers
                 )
                 
                 if response.status_code == 200:
-                    repos = response.json().get("items", [])
-                    for repo in repos:
-                        owner = repo["owner"]["login"]
-                        if await self._meets_criteria(client, owner):
-                            developers.add(owner)
+                    users = response.json().get("items", [])
+                    for user in users:
+                        if await self._is_quality_developer(client, user["login"]):
+                            developers.add(user["login"])
                             if len(developers) >= limit:
                                 break
-                                
-        return list(developers)
+                await asyncio.sleep(1)
+                            
+        return list(developers)[:limit]
 
-    async def _meets_criteria(self, client: httpx.AsyncClient, username: str) -> bool:
-        """Check if developer meets minimum requirements"""
+    async def _is_quality_developer(self, client: httpx.AsyncClient, username: str) -> bool:
         response = await client.get(
-            f"{self.base_url}/users/{username}",
-            headers=self.headers
+            f"{self.base_url}/users/{username}/repos",
+            headers=self.headers,
+            params={"sort": "stars", "per_page": 30}
         )
         
         if response.status_code != 200:
             return False
             
-        user_data = response.json()
+        repos = response.json()
+        has_solidity = False
+        total_stars = 0
         
-        # Check basic criteria
-        if user_data.get("followers", 0) < self.min_requirements["followers"]:
-            return False
-            
-        if user_data.get("public_repos", 0) < self.min_requirements["public_repos"]:
-            return False
-            
-        # Check account age
-        created_at = datetime.strptime(user_data.get("created_at", ""), "%Y-%m-%dT%H:%M:%SZ")
-        account_age = datetime.now() - created_at
-        if account_age.days < self.min_requirements["account_age_days"]:
-            return False
-            
-        # Check repository stars
-        repos_response = await client.get(
-            f"{self.base_url}/users/{username}/repos?sort=stars&direction=desc",
-            headers=self.headers
-        )
+        for repo in repos:
+            language = repo.get("language", "")
+            if language and "solidity" in language.lower():
+                has_solidity = True
+            total_stars += repo.get("stargazers_count", 0)
         
-        if repos_response.status_code == 200:
-            repos = repos_response.json()
-            if repos and repos[0].get("stargazers_count", 0) < self.min_requirements["min_stars"]:
-                return False
-        else:
-            return False
-            
-        return True
+        return has_solidity and total_stars > 100 
 
     async def get_developer_data(self, username: str) -> Dict[str, Any]:
         """Get comprehensive developer data"""
@@ -138,27 +109,6 @@ class GitHubClient:
                     "contribution_streak": activity_data.get("contribution_streak", 0)
                 }
             }
-
-    def _meets_basic_criteria(self, user_data: Dict[str, Any]) -> bool:
-        """Check if developer meets minimum requirements"""
-        if not user_data:
-            return False
-            
-        # Check followers
-        if user_data.get("followers", 0) < self.min_requirements["followers"]:
-            return False
-            
-        # Check repos
-        if user_data.get("public_repos", 0) < self.min_requirements["public_repos"]:
-            return False
-            
-        # Check account age
-        created_at = datetime.strptime(user_data.get("created_at", ""), "%Y-%m-%dT%H:%M:%SZ")
-        account_age = datetime.now() - created_at
-        if account_age.days < self.min_requirements["account_age_days"]:
-            return False
-            
-        return True
 
     async def _get_user_info(self, client: httpx.AsyncClient, username: str) -> Dict:
         """Get basic user information"""

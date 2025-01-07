@@ -1,87 +1,43 @@
 [
   {
-    "username": "OffcierCia",
-    "developer_address": "0xb1df8EE4bf643D4323C96541Cb455F4B8D4F24f5",
-    "token_address": "0x5c7ae63501f141e3053E49A7cC7F51271BA554D3",
+    "username": "FrankieIsLost",
+    "developer_address": "0x4673A8A4e8B78d697D9B3c314CC1D5CB3eb89eb6",
+    "token_address": "0xe233A32E40B0DC0430f90f7C9E102c8d2d05601C",
     "analysis": {
       "confidence_score": 85,
       "web3_skill_level": "Intermediate",
       "strengths": [
-        "Strong background in threat research",
-        "Highly active in developing DeFi and blockchain-related tools",
-        "Significant community engagement based on stars and followers"
+        "Strong proficiency in Solidity",
+        "Diverse language proficiency",
+        "Experience in building blockchain-based auction systems"
       ],
       "growth_areas": [
-        "Enhancing technical expertise in blockchain programming languages",
-        "Building a more diverse portfolio of projects",
-        "Increasing participation in the blockchain development community"
+        "Adding more detailed descriptions to repositories",
+        "Expanding expertise to smart contracts security best practices"
       ],
       "recommendation": "review",
       "specialties": [
-        "DeFi development",
-        "Blockchain security",
-        "Threat intelligence"
+        "Solidity",
+        "Blockchain Development",
+        "Smart Contracts"
       ],
       "token_value_factors": {
         "github_metrics": 8,
-        "technical_expertise": 7,
-        "web3_expertise": 6,
-        "community_influence": 9,
+        "technical_expertise": 8,
+        "web3_expertise": 7,
+        "community_influence": 6,
         "growth_potential": 8
       },
       "investment_thesis": [
-        "Demonstrated capability to build valuable tools for the DeFi and blockchain community",
-        "Strong potential for future growth and impact in web3 space"
+        "Potential to become a prominent figure in blockchain auction mechanisms",
+        "Likely to contribute significantly to the DeFi ecosystem"
       ],
       "risk_factors": [
-        "Limited experience in blockchain programming languages such as Solidity"
+        "Limited information in repository descriptions",
+        "Relatively lower community influence compared to some peers"
       ],
-      "analyzed_at": "2021-06-11T22:21:57Z",
-      "github_url": "https://github.com/OffcierCia"
-    }
-  },
-  {
-    "username": "Anish-Agnihotri",
-    "developer_address": "0x908FB302d930C1295ef4d4f58aC702aADBaf3b98",
-    "token_address": "0x01F08B0CC8D93F630197372de52662E73bCD9D9e",
-    "analysis": {
-      "confidence_score": 85,
-      "web3_skill_level": "Advanced",
-      "strengths": [
-        "Solidity smart contract development",
-        "Experience with MEV contracts",
-        "Familiarity with Uniswap V2",
-        "NFT distribution and on-chain metadata generation",
-        "Flash loan and arbitrage contract development"
-      ],
-      "growth_areas": [
-        "Diversifying language expertise beyond Solidity",
-        "Contributing to more open source projects",
-        "Enhancing knowledge of decentralized finance (DeFi) protocols"
-      ],
-      "recommendation": "review",
-      "specialties": [
-        "Smart contract development",
-        "NFT projects",
-        "Flash loan strategies"
-      ],
-      "token_value_factors": {
-        "github_metrics": 8,
-        "technical_expertise": 9,
-        "web3_expertise": 8,
-        "community_influence": 7,
-        "growth_potential": 9
-      },
-      "investment_thesis": [
-        "The developer has a strong track record in creating popular repositories in the web3 space.",
-        "With further growth in expertise and community engagement, the developer could become a notable figure in the blockchain development community."
-      ],
-      "risk_factors": [
-        "Limited diversity in language skills may limit adaptability to changing technology trends.",
-        "Relatively lower community influence compared to other developers with similar technical expertise."
-      ],
-      "analyzed_at": "2013-05-10T17:44:13Z",
-      "github_url": "https://github.com/Anish-Agnihotri"
+      "analyzed_at": "2021-07-31T04:11:08Z",
+      "github_url": "https://github.com/FrankieIsLost"
     }
   }
 ]

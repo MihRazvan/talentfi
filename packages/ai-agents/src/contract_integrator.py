@@ -9,22 +9,27 @@ from typing import Dict, Any
 class ContractIntegrator:
     def __init__(self):
         load_dotenv()
-        
-        # Connect to Lens Network
-        self.w3 = Web3(Web3.HTTPProvider(os.getenv('LENS_RPC_URL')))
+        rpc_url = os.getenv('LENS_RPC_URL', 'https://rpc.testnet.lens.dev')
+        self.w3 = Web3(Web3.HTTPProvider(rpc_url))
+    
+        if not self.w3.is_connected():
+            raise Exception(f"Failed to connect to {rpc_url}")
         self.private_key = os.getenv('PRIVATE_KEY')
         self.account = Account.from_key(self.private_key)
         
-        # Contract addresses
+        # Contract addresses from new deployment
         self.registry_address = os.getenv('REGISTRY_ADDRESS')
         self.investment_address = os.getenv('INVESTMENT_ADDRESS')
         self.auto_registration_address = os.getenv('AUTO_REGISTRATION_ADDRESS')
-        
+
         print("Loading contract ABIs...")
-        # Load contract ABIs from ai-agents/src/abi folder
         self.registry_abi = self._load_abi('TalentRegistry')
         self.investment_abi = self._load_abi('Investment')
         self.auto_registration_abi = self._load_abi('AutoRegistration')
+
+        self.registry = self.w3.eth.contract(address=self.registry_address, abi=self.registry_abi)
+        self.investment = self.w3.eth.contract(address=self.investment_address, abi=self.investment_abi)
+        self.auto_registration = self.w3.eth.contract(address=self.auto_registration_address, abi=self.auto_registration_abi)
         
         print("Initializing contracts...")
         # Initialize contracts

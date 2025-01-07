@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useCreatorToken } from '../hooks/useCreatorToken';
 import { useWallet } from '../hooks/useWallet';
+import { formatEther, parseEther } from 'ethers';
 
 interface TokenTradingProps {
     tokenAddress: string;
@@ -21,13 +22,15 @@ export function TokenTrading({ tokenAddress, symbol }: TokenTradingProps) {
 
         if (tokenAddress) {
             fetchTokenInfo();
+            const interval = setInterval(fetchTokenInfo, 10000);
+            return () => clearInterval(interval);
         }
     }, [tokenAddress, getTokenInfo]);
 
     const handleBuy = async () => {
         try {
-            await buyTokens(amount);
-            // Refresh token info after transaction
+            const valueToSend = parseEther(amount);
+            await buyTokens(valueToSend.toString());
             const info = await getTokenInfo();
             setTokenInfo(info);
             setAmount('');
@@ -37,9 +40,14 @@ export function TokenTrading({ tokenAddress, symbol }: TokenTradingProps) {
     };
 
     const handleSell = async () => {
+        if (!tokenInfo?.balance || parseFloat(formatEther(tokenInfo.balance)) < parseFloat(amount)) {
+            alert('Insufficient token balance');
+            return;
+        }
+
         try {
-            await sellTokens(amount);
-            // Refresh token info after transaction
+            const tokensToSell = parseEther(amount);
+            await sellTokens(tokensToSell.toString());
             const info = await getTokenInfo();
             setTokenInfo(info);
             setAmount('');
@@ -48,56 +56,47 @@ export function TokenTrading({ tokenAddress, symbol }: TokenTradingProps) {
         }
     };
 
-    if (!provider) {
-        return (
-            <div className="bg-gray-50 rounded-lg p-6">
-                <p className="text-center text-gray-600">
-                    Please connect your wallet to trade tokens
-                </p>
-            </div>
-        );
-    }
-
     return (
-        <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold mb-4">Trade {symbol} Tokens</h2>
-
-            <div className="mb-6">
-                <div className="flex justify-between text-sm text-gray-600 mb-2">
-                    <span>Current Price</span>
-                    <span>{tokenInfo?.price ? `${tokenInfo.price} ETH` : 'Loading...'}</span>
-                </div>
-                <div className="flex justify-between text-sm text-gray-600">
-                    <span>Total Supply</span>
-                    <span>{tokenInfo?.totalSupply || 'Loading...'}</span>
-                </div>
-            </div>
-
+        <div className="bg-white rounded-lg p-6 shadow-md">
+            <h2 className="text-xl font-semibold mb-4">Trade ${symbol} Tokens</h2>
             <div className="space-y-4">
                 <div>
-                    <label htmlFor="amount" className="block text-sm font-medium text-gray-700 mb-1">
+                    <p className="text-sm text-gray-600">Current Price</p>
+                    <p className="font-medium">
+                        {tokenInfo?.price ? formatEther(tokenInfo.price) : '0'} GRASS
+                    </p>
+                </div>
+                <div>
+                    <p className="text-sm text-gray-600">Your Balance</p>
+                    <p className="font-medium">
+                        {tokenInfo?.balance ? formatEther(tokenInfo.balance) : '0'} ${symbol}
+                    </p>
+                </div>
+                <div>
+                    <label htmlFor="amount" className="block text-sm text-gray-600">
                         Amount
                     </label>
                     <input
-                        type="number"
+                        type="text"
                         id="amount"
                         value={amount}
                         onChange={(e) => setAmount(e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                        placeholder="Enter amount"
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                        placeholder="0.0"
                     />
                 </div>
-
                 <div className="flex space-x-4">
                     <button
                         onClick={handleBuy}
-                        className="flex-1 bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                        disabled={!provider}
+                        className="flex-1 bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 disabled:opacity-50"
                     >
                         Buy
                     </button>
                     <button
                         onClick={handleSell}
-                        className="flex-1 bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                        disabled={!provider}
+                        className="flex-1 bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 disabled:opacity-50"
                     >
                         Sell
                     </button>
