@@ -5,7 +5,7 @@
 
 **Discover. Invest. Empower.**
 
-Nexon is an AI-driven talent futures market, where creators meet investors, and the future of creative potential is traded. Powered by AI agents and Lens Network, Nexon revolutionizes talent discovery, creator funding, and market-driven innovation.
+Nexon is an AI-driven talent futures market, where creators meet investors, and the future of creative potential is traded. Powered by AI agents and [Lens Network](https://lens.xyz), Nexon revolutionizes talent discovery, creator funding, and market-driven innovation.
 
 # Index
 
