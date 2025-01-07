@@ -13,7 +13,7 @@ Nexon is an AI-driven talent futures market, where creators meet investors, and 
 2. How Nexon Works?
 3. Agent Architecture
 4. Registration Flows
-5. User Flow - TO DO
+5. User Flow
 6. Tech Stack - TO DO
 7. Contracts - TO DO
 8. Growth Path
