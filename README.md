@@ -96,6 +96,54 @@ Nexon synthesizes collective intelligence about creator potential into tradable 
 
 ## Tech Stack
 
+### Smart Contracts/Backend
+
+   - **zkSync** (Layer 2 Scaling Solution)
+
+   - **Foundry** (Smart Contract Testing)
+
+   - **Hardhat** (Deployment and Verification)
+
+   - **Solidity** (Smart Contract Development)
+
+   - **OpenZeppelin Contracts** (Smart Contract Libraries)
+
+---
+
+### AI/Backend
+
+   - **Python 3.x**
+
+   - **FastAPI** (API Framework)
+
+   - **OpenAI GPT-4** (AI Analysis)
+
+   - **GitHub API** (Data Collect)
+
+   - **Web3.py** (Blockchain Interaction)
+
+   - **Unicorn** (ASGI Server)
+
+   - **Pydantic** (Data Validation)
+
+---
+
+### Frontend
+
+   - **React 18**
+
+   - **TypeScript**
+
+   - **Vite** (Build Tool)
+
+   - **TailwindCSS** (Styling)
+
+   - **ethers.js v6** (Blockchain Interactions)
+
+   - **zkSync-ethers** (zkSync Integration)
+
+   - **React Router** (Navigation)
+
 ![tech stack (2)](https://github.com/user-attachments/assets/1314f0e8-a442-4d1a-9440-8e9d2e7401fe)
 
 ## Contracts
