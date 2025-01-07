@@ -23,7 +23,7 @@ Nexon is an AI-driven talent futures market, where creators meet investors, and 
 
 ## Why Nexon?
 
-Talent discovery seems broken. Success is often dictated by followers, social clout, or industry gatekeepers rather than true achiievements and potential. So we asked: Can we make looking for a needle in a stack of hay more efficient today? Nexon is:
+Talent discovery seems broken. Success is often dictated by followers, social clout, or industry gatekeepers rather than true achievements and potential. So we asked: Can we make looking for a needle in a stack of hay more efficient today? Nexon is:
 - **Analyzing Real Achievements:** AI scouts and validates creators based on measurable outputs (e.g., Github profile, NFT portfolio, music streams, or trading activity), not arbitrary metrics.
 - **Creating Peronal Markets:** Trade creator tokens tied to the future prominence of theirs, enabling early supporters to profit while they fund the creators journey.
 - **Leveraging Market Efficiency:** If you believe someone is undervalued, trade, prove it and balance the market!
