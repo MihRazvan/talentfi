@@ -19,7 +19,7 @@ Nexon is an AI-driven talent futures market, where creators meet investors, and 
 8. Growth Path
 9. Contact
 
-[Demo Video](https://www.youtube.com/watch?v=tV97e4uJZD4) | [Prototype App](https://nexon-88uzrdx85-mihrazvans-projects.vercel.app/) | [Slide Deck](https://github.com/MihRazvan/talentfi/blob/main/docs/slide-deck.md) | [Talent Discovery & Analysis Process](https://github.com/MihRazvan/talentfi/blob/main/docs/td-ap.md) | [User Guide](https://github.com/MihRazvan/talentfi/blob/main/docs/user-guide.md) | [Contribution Guide](https://github.com/MihRazvan/talentfi/blob/main/docs/contribution-guide.md) | [Design Files](https://github.com/MihRazvan/talentfi/blob/main/docs/design-files.md)
+[Demo Video](https://www.youtube.com/watch?v=tV97e4uJZD4) | [Prototype App](https://nexon-omega.vercel.app) | [Slide Deck](https://github.com/MihRazvan/talentfi/blob/main/docs/slide-deck.md) | [Talent Discovery & Analysis Process](https://github.com/MihRazvan/talentfi/blob/main/docs/td-ap.md) | [User Guide](https://github.com/MihRazvan/talentfi/blob/main/docs/user-guide.md) | [Contribution Guide](https://github.com/MihRazvan/talentfi/blob/main/docs/contribution-guide.md) | [Design Files](https://github.com/MihRazvan/talentfi/blob/main/docs/design-files.md)
 
 ## Why Nexon?
 
