@@ -83,12 +83,12 @@ Nexon synthesizes collective intelligence about creator potential into tradable 
 2. **Manual**
    - Developer inputs GitHub username.
    - Analysis Agent runs same validation process.
-   - If approved:
-       - Profile created.
-       - Token deployed.
-       - Automatically claimed if developer initiated, otherwise stays unclaimed (reserved) and Scout recieves the future reward claim.
-   - If rejected:
-       - Detailed feedback provided.
+      - If approved:
+          - Profile created.
+          - Token deployed.
+          - Automatically claimed if developer initiated, otherwise stays unclaimed (reserved) and Scout recieves the future reward claim.
+      - If rejected:
+          - Detailed feedback provided.
 
 ## User Flow
 
