@@ -33,7 +33,7 @@ Talent discovery seems broken. Success is often dictated by followers, social cl
 
 Nexon synthesizes collective intelligence about creator potential into tradable markets. This "proto-info finance" model aligns with concepts outlined in Vitalik Buterin´s [Info Finance](https://vitalik.eth.limo/general/2024/11/09/infofinance.html) and Robin Hanson´s [Prestige Futures](https://www.overcomingbias.com/p/more-academic-prestige-futureshtml).
 
-![content (2)](https://github.com/user-attachments/assets/c9513a98-9a08-41e0-8394-5fa2e05b906c)
+![Frame 8 (2)](https://github.com/user-attachments/assets/bad3f71f-d531-4e17-8848-ee19da63f16f)
 
 ## How Nexon Works? Key features
 
@@ -104,7 +104,7 @@ Nexon synthesizes collective intelligence about creator potential into tradable 
 
 Nexon begins with developers, the most quantifiable talent pool.
 
-**Stage 1:** Developers (GitHub API)
+**Stage 1:** Developers (GitHub API) - Scope for this hackathon
 
 **Stage 2:** NFT-Creators (OpenSea API)
 
