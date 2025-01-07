@@ -1,18 +1,20 @@
 import React from 'react';
 import { Share2, Heart, Shield, ShieldCheck, TrendingUp, AlertTriangle } from 'lucide-react';
+import { CreatorData } from '../../hooks/useCreatorData';
+import { Link } from 'react-router-dom';
 
 interface CreatorCardProps {
-    creator: any;
+    creator: CreatorData;
 }
 
 const CreatorCard: React.FC<CreatorCardProps> = ({ creator }) => {
-    // Simulating claimed status - in production this would come from blockchain
-    const isClaimed = creator.username === "robsecord" || creator.username === "0xkoiner";
-
-    const tokenPrice = Number(creator.analysis.market_metrics.suggested_initial_price) / 1e18;
+    const tokenPrice = creator.tokenData?.price || 0;
 
     return (
-        <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden hover:shadow-md transition-shadow">
+        <Link
+            to={`/profile/${creator.username}`}
+            className="block bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden hover:shadow-md transition-shadow"
+        >
             <div className="p-4">
                 {/* Header */}
                 <div className="flex items-start justify-between mb-4">
@@ -27,7 +29,7 @@ const CreatorCard: React.FC<CreatorCardProps> = ({ creator }) => {
                                 }}
                             />
                             {/* Status Icon */}
-                            {isClaimed ? (
+                            {creator.isClaimed ? (
                                 <ShieldCheck className="w-4 h-4 text-emerald-500 absolute -bottom-1 -right-1" />
                             ) : (
                                 <Shield className="w-4 h-4 text-slate-400 absolute -bottom-1 -right-1" />
@@ -77,7 +79,7 @@ const CreatorCard: React.FC<CreatorCardProps> = ({ creator }) => {
                     <div className="flex justify-between items-center">
                         <div className="flex flex-col">
                             <span className="text-xs text-slate-500">Token Price</span>
-                            <span className="font-medium text-slate-900">${tokenPrice.toFixed(2)}</span>
+                            <span className="font-medium text-slate-900">${tokenPrice.toFixed(2)} GRASS</span>
                         </div>
                         <button className="px-3 py-1.5 bg-indigo-500 text-white text-sm font-medium rounded-full hover:bg-indigo-600 transition-colors">
                             Invest
@@ -85,7 +87,7 @@ const CreatorCard: React.FC<CreatorCardProps> = ({ creator }) => {
                     </div>
                 </div>
             </div>
-        </div>
+        </Link>
     );
 };
 

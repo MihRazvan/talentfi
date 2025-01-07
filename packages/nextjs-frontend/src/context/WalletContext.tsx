@@ -1,6 +1,6 @@
 import { createContext, useContext, ReactNode } from 'react';
 import { useWallet } from '../hooks/useWallet';
-import { Signer, Provider } from 'zksync-ethers';
+import { Provider, Signer } from 'zksync-ethers';
 
 interface WalletContextType {
     isConnected: boolean;

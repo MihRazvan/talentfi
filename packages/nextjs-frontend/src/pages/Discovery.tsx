@@ -3,7 +3,7 @@ import { Search } from 'lucide-react';
 import CreatorCard from '../components/Discovery/CreatorCard';
 import ActivityFeed from '../components/Discovery/ActivityFeed';
 import TopVolume from '../components/Discovery/TopVolume';
-import { mockDevelopers } from '../data/mockData';
+import { useCreatorData } from '../hooks/useCreatorData';
 
 const categories = [
     { id: 'featured', label: 'Featured' },
@@ -16,13 +16,34 @@ const categories = [
 const Discovery = () => {
     const [activeCategory, setActiveCategory] = useState('featured');
     const [searchQuery, setSearchQuery] = useState('');
+    const { creators, loading, error } = useCreatorData();
 
-    const filteredCreators = mockDevelopers.filter(creator =>
+    const filteredCreators = creators.filter(creator =>
         creator.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
         creator.analysis.skills_assessment.validated_skills.some(skill =>
             skill.toLowerCase().includes(searchQuery.toLowerCase())
         )
     );
+
+    if (loading) {
+        return (
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div className="flex items-center justify-center h-64">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500"></div>
+                </div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div className="bg-red-50 text-red-700 p-4 rounded-lg">
+                    {error}
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -74,5 +95,6 @@ const Discovery = () => {
         </div>
     );
 };
+
 
 export default Discovery;

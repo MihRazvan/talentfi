@@ -1,10 +1,11 @@
 import { useState, useCallback, useEffect } from 'react';
-import { BrowserProvider, Signer, Provider } from 'zksync-ethers';
+import { BrowserProvider } from 'ethers';
+import { Provider } from 'zksync-ethers';
 
 interface WalletState {
     isConnected: boolean;
     address: string | null;
-    signer: Signer | null;
+    signer: any;
     provider: Provider | null;
     chainId: number | null;
     error: string | null;
@@ -23,26 +24,32 @@ export function useWallet() {
         error: null,
     });
 
-    const addLensNetwork = async () => {
+    const setupConnection = async () => {
         if (!window.ethereum) return;
 
         try {
-            await window.ethereum.request({
-                method: 'wallet_addEthereumChain',
-                params: [{
-                    chainId: `0x${LENS_TESTNET_CHAIN_ID.toString(16)}`,
-                    chainName: 'Lens Network Sepolia Testnet',
-                    nativeCurrency: {
-                        name: 'GRASS',
-                        symbol: 'GRASS',
-                        decimals: 18
-                    },
-                    rpcUrls: [LENS_TESTNET_RPC],
-                    blockExplorerUrls: ['https://block-explorer.testnet.lens.dev']
-                }]
-            });
+            const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+            if (accounts.length > 0) {
+                const ethProvider = new BrowserProvider(window.ethereum);
+                const network = await ethProvider.getNetwork();
+                const chainId = Number(network.chainId);
+
+                if (chainId === LENS_TESTNET_CHAIN_ID) {
+                    const provider = new Provider(LENS_TESTNET_RPC);
+                    const signer = await ethProvider.getSigner();
+
+                    setState({
+                        isConnected: true,
+                        address: accounts[0],
+                        signer,
+                        provider,
+                        chainId,
+                        error: null,
+                    });
+                }
+            }
         } catch (error) {
-            console.error('Failed to add Lens Network:', error);
+            console.error('Failed to setup connection:', error);
         }
     };
 
@@ -60,16 +67,32 @@ export function useWallet() {
                 method: 'eth_requestAccounts'
             });
 
-            const browserProvider = new BrowserProvider(window.ethereum);
-            const network = await browserProvider.getNetwork();
+            const ethProvider = new BrowserProvider(window.ethereum);
+            const network = await ethProvider.getNetwork();
             const chainId = Number(network.chainId);
 
             if (chainId !== LENS_TESTNET_CHAIN_ID) {
-                await addLensNetwork();
-                await window.ethereum.request({
-                    method: 'wallet_switchEthereumChain',
-                    params: [{ chainId: `0x${LENS_TESTNET_CHAIN_ID.toString(16)}` }],
-                });
+                try {
+                    await window.ethereum.request({
+                        method: 'wallet_switchEthereumChain',
+                        params: [{ chainId: `0x${LENS_TESTNET_CHAIN_ID.toString(16)}` }],
+                    });
+                } catch (err) {
+                    await window.ethereum.request({
+                        method: 'wallet_addEthereumChain',
+                        params: [{
+                            chainId: `0x${LENS_TESTNET_CHAIN_ID.toString(16)}`,
+                            chainName: 'Lens Network Sepolia Testnet',
+                            nativeCurrency: {
+                                name: 'GRASS',
+                                symbol: 'GRASS',
+                                decimals: 18
+                            },
+                            rpcUrls: [LENS_TESTNET_RPC],
+                            blockExplorerUrls: ['https://block-explorer.testnet.lens.dev']
+                        }]
+                    });
+                }
                 setState(prev => ({
                     ...prev,
                     error: "Please switch to Lens Network Sepolia Testnet and try again"
@@ -78,17 +101,11 @@ export function useWallet() {
             }
 
             const provider = new Provider(LENS_TESTNET_RPC);
-            const signer = Signer.from(
-                await browserProvider.getSigner(),
-                LENS_TESTNET_CHAIN_ID,
-                provider
-            );
-
-            const address = accounts[0];
+            const signer = await ethProvider.getSigner();
 
             setState({
                 isConnected: true,
-                address,
+                address: accounts[0],
                 signer,
                 provider,
                 chainId: LENS_TESTNET_CHAIN_ID,
@@ -115,17 +132,23 @@ export function useWallet() {
     }, []);
 
     useEffect(() => {
+        setupConnection();
+
         const ethereum = window.ethereum;
         if (!ethereum) return;
 
-        ethereum.on('accountsChanged', disconnectWallet);
-        ethereum.on('chainChanged', disconnectWallet);
+        ethereum.on('accountsChanged', () => {
+            setupConnection();
+        });
+        ethereum.on('chainChanged', () => {
+            setupConnection();
+        });
 
         return () => {
-            ethereum.removeListener('accountsChanged', disconnectWallet);
-            ethereum.removeListener('chainChanged', disconnectWallet);
+            ethereum.removeListener('accountsChanged', setupConnection);
+            ethereum.removeListener('chainChanged', setupConnection);
         };
-    }, [disconnectWallet]);
+    }, []);
 
     return {
         ...state,
