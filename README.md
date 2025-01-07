@@ -14,7 +14,7 @@ Nexon is an AI-driven talent futures market, where creators meet investors, and 
 3. Agent Architecture
 4. Registration Flows
 5. User Flow
-6. Tech Stack - TO DO
+6. Tech Stack
 7. Contracts - TO DO
 8. Growth Path
 9. Contact
@@ -95,6 +95,8 @@ Nexon synthesizes collective intelligence about creator potential into tradable 
 ![user flow (4)](https://github.com/user-attachments/assets/4148980e-a2bb-419f-8bd9-065513aaade4)
 
 ## Tech Stack
+
+![tech stack (2)](https://github.com/user-attachments/assets/1314f0e8-a442-4d1a-9440-8e9d2e7401fe)
 
 ## Contracts
 
