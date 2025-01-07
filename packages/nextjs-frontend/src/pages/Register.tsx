@@ -1,77 +1,60 @@
 import React, { useState } from 'react';
-import { CreatorType, inputConfigs } from '../types/creator';
 import { Layout } from '../components/Layout';
-
-const categories: CreatorType[] = ['Developer', 'NFT-Creator', 'Musician', 'Trader'];
+import { Github } from 'lucide-react';
+import { useWallet } from '../hooks/useWallet';
 
 export function Register() {
-    const [selectedCategory, setSelectedCategory] = useState<CreatorType>('Developer');
-    const [inputValue, setInputValue] = useState('');
+    const [githubUsername, setGithubUsername] = useState('');
+    const { provider } = useWallet();
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        // TODO: Implement GitHub authentication and registration
+        console.log('Register with GitHub username:', githubUsername);
+    };
 
     return (
         <Layout>
-            <div className="min-h-screen bg-white">
-                {/* Gradient Banner */}
-                <div className="h-32">
-                    <img
-                        src="/footer_background.png"
-                        alt=""
-                        className="w-full h-full object-cover"
-                    />
-                </div>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div className="max-w-md mx-auto">
+                    <h1 className="text-3xl font-bold mb-8 text-center">Register as a Developer</h1>
 
-                {/* Main Content */}
-                <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
-                    <h1 className="text-4xl font-playfair mb-2">Join Nexon</h1>
-                    <p className="text-xl text-gray-600 mb-12">Become part of the next generation of creators</p>
-
-                    {/* Category Selection */}
-                    <div className="mb-12">
-                        <h2 className="text-xl font-medium mb-6">Select category</h2>
-                        <div className="flex justify-center space-x-6">
-                            {categories.map((category) => (
-                                <button
-                                    key={category}
-                                    onClick={() => setSelectedCategory(category)}
-                                    className={`px-6 py-3 rounded-full ${selectedCategory === category
-                                            ? 'bg-black text-white'
-                                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                                        }`}
-                                >
-                                    {category}
-                                </button>
-                            ))}
+                    {!provider ? (
+                        <div className="bg-white rounded-lg shadow p-6 text-center">
+                            <p className="text-gray-600 mb-4">
+                                Please connect your wallet to register
+                            </p>
                         </div>
-                    </div>
+                    ) : (
+                        <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow p-6">
+                            <div className="mb-4">
+                                <label htmlFor="githubUsername" className="block text-sm font-medium text-gray-700 mb-2">
+                                    GitHub Username
+                                </label>
+                                <input
+                                    type="text"
+                                    id="githubUsername"
+                                    value={githubUsername}
+                                    onChange={(e) => setGithubUsername(e.target.value)}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                                    placeholder="Enter your GitHub username"
+                                    required
+                                />
+                            </div>
 
-                    {/* Input Section */}
-                    <div className="mb-12">
-                        <h2 className="text-xl font-medium mb-6">{inputConfigs[selectedCategory].label}</h2>
-                        <input
-                            type="text"
-                            value={inputValue}
-                            onChange={(e) => setInputValue(e.target.value)}
-                            placeholder={inputConfigs[selectedCategory].placeholder}
-                            className="w-full px-4 py-3 border rounded-lg text-center"
-                        />
-                    </div>
+                            <button
+                                type="submit"
+                                className="w-full flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                            >
+                                <Github className="h-4 w-4 mr-2" />
+                                Authenticate with GitHub
+                            </button>
 
-                    {/* Verify Button */}
-                    <button className="w-48 py-3 nexon-gradient text-white rounded-lg mb-8">
-                        verify
-                    </button>
-
-                    <p className="text-gray-500 mb-8">Waiting for verification...</p>
-
-                    {/* Action Buttons */}
-                    <div className="flex justify-center space-x-4">
-                        <button disabled className="px-8 py-3 bg-gray-200 text-gray-400 rounded-lg cursor-not-allowed">
-                            register
-                        </button>
-                        <button disabled className="px-8 py-3 bg-gray-200 text-gray-400 rounded-lg cursor-not-allowed">
-                            claim
-                        </button>
-                    </div>
+                            <p className="mt-4 text-sm text-gray-500 text-center">
+                                By registering, you agree to create a developer profile and token on Nexon
+                            </p>
+                        </form>
+                    )}
                 </div>
             </div>
         </Layout>

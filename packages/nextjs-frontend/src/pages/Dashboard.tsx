@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, ArrowUpDown, Heart } from 'lucide-react';
+import { Search, ArrowUpDown, Heart, Shield } from 'lucide-react';
 import { Layout } from '../components/Layout';
 import { useTalentRegistry } from '../hooks/useContract';
-import { Contract } from 'zksync-ethers';
-import { Log } from 'ethers';
 
 const categories = ['Featured', 'Developers', 'NFT-Creators', 'Musicians', 'Traders'];
 
@@ -12,6 +10,7 @@ interface Developer {
     walletAddress: string;
     githubUsername: string;
     isVerified: boolean;
+    isClaimed: boolean;
     tokenAddress: string;
     createdAt: number;
 }
@@ -26,30 +25,29 @@ export function Dashboard() {
             if (!contract) return;
 
             try {
-                const filter = contract.filters.DeveloperRegistered();
+                const filter = await contract.filters.DeveloperRegistered();
                 const events = await contract.queryFilter(filter);
-
-                const uniqueDevelopers = new Set(
-                    events
-                        .filter((event): event is Log & { args: any[] } => 'args' in event)
-                        .map(event => event.args[0])
-                );
+                console.log('Events:', events);
 
                 const devs = await Promise.all(
-                    Array.from(uniqueDevelopers).map(async (address) => {
-                        if (!address) return null;
-
+                    events.map(async (event) => {
                         try {
-                            const dev = await contract.developers(address);
+                            const args = event.args;
+                            if (!args) return null;
+
+                            const developerAddress = args[0];
+                            const dev = await contract.developers(developerAddress);
+
                             return {
                                 walletAddress: dev.walletAddress,
                                 githubUsername: dev.githubUsername,
                                 isVerified: dev.isVerified,
+                                isClaimed: false, // For now, all profiles are unclaimed
                                 tokenAddress: dev.tokenAddress,
                                 createdAt: Number(dev.createdAt)
                             };
                         } catch (error) {
-                            console.error(`Error fetching developer ${address}:`, error);
+                            console.error('Error processing event:', error);
                             return null;
                         }
                     })
@@ -73,7 +71,6 @@ export function Dashboard() {
     return (
         <Layout>
             <div className="min-h-screen bg-white">
-                {/* Categories */}
                 <div className="border-b">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="flex space-x-8 h-16 items-center">
@@ -81,8 +78,8 @@ export function Dashboard() {
                                 <button
                                     key={category}
                                     className={`px-4 py-2 text-sm font-medium ${category === 'Featured'
-                                            ? 'text-black border-b-2 border-black'
-                                            : 'text-gray-500 hover:text-black'
+                                        ? 'text-black border-b-2 border-black'
+                                        : 'text-gray-500 hover:text-black'
                                         }`}
                                 >
                                     {category}
@@ -92,9 +89,7 @@ export function Dashboard() {
                     </div>
                 </div>
 
-                {/* Main Content */}
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                    {/* Search Bar */}
                     <div className="mb-8">
                         <div className="relative max-w-md">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -106,7 +101,6 @@ export function Dashboard() {
                         </div>
                     </div>
 
-                    {/* Developer Cards */}
                     {loading ? (
                         <div className="text-center py-12">Loading developers...</div>
                     ) : developers.length === 0 ? (
@@ -114,9 +108,10 @@ export function Dashboard() {
                     ) : (
                         <div className="grid grid-cols-2 gap-6">
                             {developers.map((dev) => (
-                                <div
+                                <Link
+                                    to={`/profile/${dev.githubUsername}`}
                                     key={dev.walletAddress}
-                                    className="bg-white rounded-lg p-4 shadow-md border border-gray-100"
+                                    className="bg-white rounded-lg p-4 shadow-md border border-gray-100 hover:shadow-lg transition-shadow"
                                 >
                                     <div className="flex items-start justify-between mb-4">
                                         <div className="flex items-center">
@@ -129,7 +124,7 @@ export function Dashboard() {
                                                 <div className="flex items-center">
                                                     <span className="font-medium">@{dev.githubUsername}</span>
                                                     {dev.isVerified && (
-                                                        <span className="ml-1 text-blue-500">✓</span>
+                                                        <Shield className="ml-1 h-4 w-4 text-blue-500" />
                                                     )}
                                                 </div>
                                                 <p className="text-sm text-gray-500">
@@ -157,8 +152,20 @@ export function Dashboard() {
                                                 {new Date(dev.createdAt * 1000).toLocaleDateString()}
                                             </span>
                                         </div>
+                                        {!dev.isClaimed && (
+                                            <button
+                                                className="mt-4 w-full flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    // TODO: Implement claim functionality
+                                                    console.log('Claim profile:', dev.githubUsername);
+                                                }}
+                                            >
+                                                Claim Profile
+                                            </button>
+                                        )}
                                     </div>
-                                </div>
+                                </Link>
                             ))}
                         </div>
                     )}
