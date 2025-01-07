@@ -14,12 +14,12 @@ Nexon is an AI-driven talent futures market, where creators meet investors, and 
 3. Agent Architecture
 4. Registration Flows
 5. User Flow
-6. Tech Stack - TO DO
+6. Tech Stack
 7. Contracts - TO DO
 8. Growth Path
 9. Contact
 
-[Demo Video]() | [Prototype App]() | [Slide Deck]() | [Talent Discovery & Analysis Process](https://github.com/MihRazvan/talentfi/blob/main/docs/td-ap.md) | [User Guide](https://github.com/MihRazvan/talentfi/blob/main/docs/user-guide.md) | [Contribution Guide](https://github.com/MihRazvan/talentfi/blob/main/docs/contribution-guide.md) | [Design Files](https://github.com/MihRazvan/talentfi/blob/main/docs/design-files.md)
+[Demo Video]() | [Prototype App]() | [Slide Deck](https://github.com/MihRazvan/talentfi/blob/main/docs/slide-deck.md) | [Talent Discovery & Analysis Process](https://github.com/MihRazvan/talentfi/blob/main/docs/td-ap.md) | [User Guide](https://github.com/MihRazvan/talentfi/blob/main/docs/user-guide.md) | [Contribution Guide](https://github.com/MihRazvan/talentfi/blob/main/docs/contribution-guide.md) | [Design Files](https://github.com/MihRazvan/talentfi/blob/main/docs/design-files.md)
 
 ## Why Nexon?
 
@@ -33,7 +33,7 @@ Talent discovery seems broken. Success is often dictated by followers, social cl
 
 Nexon synthesizes collective intelligence about creator potential into tradable markets. This "proto-info finance" model aligns with concepts outlined in Vitalik Buterin´s [Info Finance](https://vitalik.eth.limo/general/2024/11/09/infofinance.html) and Robin Hanson´s [Prestige Futures](https://www.overcomingbias.com/p/more-academic-prestige-futureshtml).
 
-![content (2)](https://github.com/user-attachments/assets/c9513a98-9a08-41e0-8394-5fa2e05b906c)
+![Frame 8 (2)](https://github.com/user-attachments/assets/bad3f71f-d531-4e17-8848-ee19da63f16f)
 
 ## How Nexon Works? Key features
 
@@ -83,18 +83,20 @@ Nexon synthesizes collective intelligence about creator potential into tradable 
 2. **Manual**
    - Developer inputs GitHub username.
    - Analysis Agent runs same validation process.
-   - If approved:
-       - Profile created.
-       - Token deployed.
-       - Automatically claimed if developer initiated, otherwise stays unclaimed (reserved) and Scout recieves the future reward claim.
-   - If rejected:
-       - Detailed feedback provided.
+      - If approved:
+          - Profile created.
+          - Token deployed.
+          - Automatically claimed if developer initiated, otherwise stays unclaimed (reserved) and Scout recieves the future reward claim.
+      - If rejected:
+          - Detailed feedback provided.
 
 ## User Flow
 
-![user flow (4)](https://github.com/user-attachments/assets/4148980e-a2bb-419f-8bd9-065513aaade4)
+![user flow (6)](https://github.com/user-attachments/assets/4d848e3f-ec64-4439-a614-39225d6deb39)
 
 ## Tech Stack
+
+![tech stack (2)](https://github.com/user-attachments/assets/1314f0e8-a442-4d1a-9440-8e9d2e7401fe)
 
 ## Contracts
 
@@ -102,7 +104,7 @@ Nexon synthesizes collective intelligence about creator potential into tradable 
 
 Nexon begins with developers, the most quantifiable talent pool.
 
-**Stage 1:** Developers (GitHub API)
+**Stage 1:** Developers (GitHub API) - *"Scope for this hackathon"*
 
 **Stage 2:** NFT-Creators (OpenSea API)
 
