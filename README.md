@@ -148,6 +148,14 @@ Nexon synthesizes collective intelligence about creator potential into tradable 
 
 ## Contracts
 
+   - REGISTRY_ADDRESS=[0x7920223Fa0050320a4a00dAC57a8C81bb1D49aE0](https://testnet.lenscan.io/address/0x7920223Fa0050320a4a00dAC57a8C81bb1D49aE0))
+
+   - INVESTMENT_ADDRESS=[0x5ec2687Af6B32A44113E2449df0454f8c707C8DA](https://testnet.lenscan.io/address/0x5ec2687Af6B32A44113E2449df0454f8c707C8DA)
+
+   - AUTO_REGISTRATION_ADDRESS=[0x5c27875C931bf3b9dAD39E383E0eAD3B53E83ca1](https://testnet.lenscan.io/address/0x5c27875C931bf3b9dAD39E383E0eAD3B53E83ca1)
+
+   - PRICE_TRACKER_ADDRESS=[0xb20561a5bB5A9e165daF2346380E616C8Afc2f81](https://testnet.lenscan.io/address/0xb20561a5bB5A9e165daF2346380E616C8Afc2f81)
+
 ## Growth Path
 
 Nexon begins with developers, the most quantifiable talent pool.
