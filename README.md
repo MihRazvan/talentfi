@@ -160,13 +160,13 @@ Nexon synthesizes collective intelligence about creator potential into tradable 
 
 Nexon begins with developers, the most quantifiable talent pool.
 
-**Stage 1:** Developers (GitHub API) - *"Scope for this hackathon"*
+   - **Stage 1:** Developers (GitHub API) - *"Scope for this hackathon"*
 
-**Stage 2:** NFT-Creators (OpenSea API)
+   - **Stage 2:** NFT-Creators (OpenSea API)
 
-**Stage 3:** Musicians (SoundCloud API)
+   - **Stage 3:** Musicians (SoundCloud API)
 
-**Stage 4:** Traders (DeBank API)
+   - **Stage 4:** Traders (DeBank API)
 
 ## Contact
 
